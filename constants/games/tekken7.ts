@@ -1,3 +1,5 @@
+export const title = 'Tekken 7';
+
 export const roster = [
     'Akuma',
     'Alisa',

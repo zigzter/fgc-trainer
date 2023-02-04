@@ -1,3 +1,5 @@
+export const title = 'Super Smash Bros Melee';
+
 export const roster = [
     'Bowser',
     'Captain Falcon',

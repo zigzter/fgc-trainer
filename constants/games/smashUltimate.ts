@@ -1,3 +1,5 @@
+export const title = 'Super Smash Bros Ultimate';
+
 export const roster = [
     'Mario',
     'Luigi',
