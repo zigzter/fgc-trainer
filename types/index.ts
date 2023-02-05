@@ -1,3 +1,5 @@
+import * as games from '../constants/games/';
+
 /**
  * A single input. e.g. A, X, up, triangle, quarter-circle right
  */
