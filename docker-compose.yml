@@ -20,6 +20,7 @@ services:
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      PORT: 3030
     depends_on:
       db:
         condition: service_healthy
