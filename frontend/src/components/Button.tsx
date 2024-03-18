@@ -7,7 +7,7 @@ interface Props {
 
 export default function Button({ children, type }: Props) {
     return (
-        <MUIButton color="primary" type={type}>
+        <MUIButton variant="contained" color="primary" type={type}>
             {children}
         </MUIButton>
     );
