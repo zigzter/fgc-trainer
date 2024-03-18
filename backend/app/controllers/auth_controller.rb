@@ -14,6 +14,20 @@ class AuthController < ApplicationController
     render json: resp
   end
 
+  def sign_up
+    user = {
+      USERNAME: params[:username],
+      PASSWORD: params[:password]
+      EMAIL: params[:email]
+    }
+    begin
+      resp = Cognito.create_user(user)
+    rescue StandardError => e
+      resp = e
+    end
+    render json: resp
+  end
+
   def sign_out
     if request.headers['Authorization']
       Cognito.sign_out(request.headers['Authorization'])
