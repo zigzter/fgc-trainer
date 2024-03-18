@@ -7,11 +7,13 @@ import Root from "./routes/Root.tsx";
 import SignUp from "./routes/SignUp.tsx";
 import SignIn from "./routes/SignIn.tsx";
 import ErrorPage from "./ErrorPage.tsx";
+import Index from "./routes/index.tsx";
+import Routines from "./routes/Routines.tsx";
+import History from "./routes/History.tsx";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import Index from "./routes/index.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
             {
                 path: "signin",
                 element: <SignIn />,
+            },
+            {
+                path: "routines",
+                element: <Routines />,
+            },
+            {
+                path: "history",
+                element: <History />,
             },
         ],
     },
