@@ -7,7 +7,7 @@ class AuthController < ApplicationController
       PASSWORD: params[:password]
     }
     begin
-      resp = Cognito.authenticate(user)
+      resp = Cognito.authenticate(user).authentication_result
     rescue StandardError => e
       resp = e
     end
@@ -17,7 +17,7 @@ class AuthController < ApplicationController
   def sign_up
     user = {
       USERNAME: params[:username],
-      PASSWORD: params[:password]
+      PASSWORD: params[:password],
       EMAIL: params[:email]
     }
     begin
