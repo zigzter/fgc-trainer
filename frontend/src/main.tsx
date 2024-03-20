@@ -14,11 +14,21 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { Amplify } from "aws-amplify";
 
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             staleTime: 1000 * 10,
+        },
+    },
+});
+
+Amplify.configure({
+    Auth: {
+        Cognito: {
+            userPoolId: "us-east-1_lQbpoIEmv",
+            userPoolClientId: "18kvmudvk3dnl76n62hqltt7pm",
         },
     },
 });

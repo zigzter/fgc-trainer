@@ -1,10 +1,9 @@
 import { useForm } from "react-hook-form";
+import { Paper } from "@mui/material";
+import { signIn } from "aws-amplify/auth";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import Input from "../components/Input";
-import { useMutation } from "@tanstack/react-query";
-import { SIGN_IN_URL } from "../config";
-import { Paper } from "@mui/material";
 
 type FormData = {
     username: string;
@@ -18,23 +17,10 @@ export default function SignIn() {
         formState: { errors },
     } = useForm<FormData>();
 
-    const mutation = useMutation({
-        mutationFn: (user: FormData) =>
-            fetch(SIGN_IN_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
-            }).then((res) => res.json()),
-        onSuccess: (data) => {
-            console.log(data);
-        },
-        onError: (error) => {
-            console.log("Error on SignIn:", error);
-        },
-    });
-
     const onSubmit = (data: FormData) => {
-        mutation.mutate(data);
+        signIn(data).then((output) => {
+            console.log(output);
+        });
     };
 
     return (

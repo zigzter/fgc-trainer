@@ -2,9 +2,8 @@ import { useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import Input from "../components/Input";
-import { useMutation } from "@tanstack/react-query";
-import { SIGN_UP_URL } from "../config";
 import { Paper } from "@mui/material";
+import { signUp } from "aws-amplify/auth";
 
 type FormData = {
     username: string;
@@ -18,17 +17,11 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
-    const mutation = useMutation({
-        mutationFn: (user: FormData) =>
-            fetch(SIGN_UP_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
-            }),
-    });
 
     const onSubmit = (data: FormData) => {
-        mutation.mutate(data);
+        signUp(data).then((output) => {
+            console.log(output);
+        });
     };
 
     return (
