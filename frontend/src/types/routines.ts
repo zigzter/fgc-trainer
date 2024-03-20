@@ -4,6 +4,7 @@ export interface Combo {
     id: string;
     name: string;
     inputs: Input[];
+    notes: string;
 }
 
 export interface Routine {
@@ -11,4 +12,5 @@ export interface Routine {
     game: string;
     title: string;
     combos: Combo[];
+    notes: string;
 }

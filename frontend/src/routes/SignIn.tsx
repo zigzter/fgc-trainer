@@ -17,13 +17,20 @@ export default function SignIn() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
+
     const mutation = useMutation({
         mutationFn: (user: FormData) =>
             fetch(SIGN_IN_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(user),
-            }),
+            }).then((res) => res.json()),
+        onSuccess: (data) => {
+            console.log(data);
+        },
+        onError: (error) => {
+            console.log("Error on SignIn:", error);
+        },
     });
 
     const onSubmit = (data: FormData) => {
