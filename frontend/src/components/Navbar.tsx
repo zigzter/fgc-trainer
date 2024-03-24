@@ -1,6 +1,7 @@
 import {
     AppBar,
     Box,
+    Button,
     Container,
     IconButton,
     Menu,
@@ -13,7 +14,6 @@ import GamepadIcon from "@mui/icons-material/Gamepad";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Button from "./Button";
 
 const pages = ["Routines", "History"];
 
@@ -39,10 +39,17 @@ export default function Navbar() {
 
     const renderAuthButtons = (sessionExists: boolean) => {
         if (sessionExists) {
-            return <Button onClick={handleSignOutClick}>Sign Out</Button>;
+            return (
+                <Button
+                    sx={{ my: 2, color: "white", display: "block" }}
+                    onClick={handleSignOutClick}
+                >
+                    Sign Out
+                </Button>
+            );
         }
         return (
-            <Button component={Link} to="/signin">
+            <Button component={Link} sx={{ my: 2, color: "white", display: "block" }} to="/signin">
                 Sign In
             </Button>
         );

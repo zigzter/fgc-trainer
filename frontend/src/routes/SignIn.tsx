@@ -1,9 +1,7 @@
 import { useForm } from "react-hook-form";
-import { Alert, Paper } from "@mui/material";
+import { Alert, Paper, Button, TextField } from "@mui/material";
 import { signIn } from "aws-amplify/auth";
-import Button from "../components/Button";
 import Form from "../components/Form";
-import Input from "../components/Input";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -35,18 +33,18 @@ export default function SignIn() {
     return (
         <Paper sx={{ width: 400, p: 4 }}>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Input
+                <TextField
                     label="Username"
                     id="username"
                     {...register("username", { required: "Username is required" })}
-                    error={errors.username?.message}
+                    helperText={errors.username?.message}
                 />
-                <Input
+                <TextField
                     label="Password"
                     id="password"
                     type="password"
                     {...register("password", { required: "Password is required" })}
-                    error={errors.password?.message}
+                    helperText={errors.password?.message}
                 />
                 <Button type="submit">Sign In</Button>
             </Form>

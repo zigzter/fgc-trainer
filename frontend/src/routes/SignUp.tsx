@@ -1,8 +1,6 @@
 import { useForm } from "react-hook-form";
-import Button from "../components/Button";
 import Form from "../components/Form";
-import Input from "../components/Input";
-import { Paper } from "@mui/material";
+import { Paper, Button, TextField } from "@mui/material";
 import { signUp } from "aws-amplify/auth";
 
 type FormData = {
@@ -27,24 +25,24 @@ export default function SignUp() {
     return (
         <Paper sx={{ p: 4, width: 400 }}>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Input
+                <TextField
                     label="Username"
                     id="username"
                     {...register("username", { required: "Username is required" })}
-                    error={errors.username?.message}
+                    helperText={errors.username?.message}
                 />
-                <Input
+                <TextField
                     label="Email"
                     id="email"
                     {...register("email", { required: "Email is required" })}
-                    error={errors.email?.message}
+                    helperText={errors.email?.message}
                 />
-                <Input
+                <TextField
                     label="Password"
                     id="password"
                     type="password"
                     {...register("password", { required: "Password is required" })}
-                    error={errors.password?.message}
+                    helperText={errors.password?.message}
                 />
                 <Button type="submit">Sign Up</Button>
             </Form>
