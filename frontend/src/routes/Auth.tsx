@@ -12,7 +12,7 @@ function a11yProps(index: number) {
 
 export default function Auth() {
     const [tabValue, setTabValue] = useState(0);
-    const handleChange = (event: SyntheticEvent, newVal: number) => {
+    const handleChange = (_: SyntheticEvent, newVal: number) => {
         setTabValue(newVal);
     };
 

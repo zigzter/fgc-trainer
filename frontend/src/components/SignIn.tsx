@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-import { Alert, Button, TextField } from "@mui/material";
+import { Alert, Button, Link, TextField } from "@mui/material";
 import { AuthError, signIn } from "aws-amplify/auth";
 import Form from "../components/Form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 
 type FormData = {
@@ -65,6 +65,12 @@ export default function SignIn({ index, value }: Props) {
                     {signInError}
                 </Alert>
             )}
+            <div style={{ marginTop: 8 }}>
+                {/* sx does not want to work on the Link */}
+                <Link component={RouterLink} to="#">
+                    Forgot password?
+                </Link>
+            </div>
         </div>
     );
 }
