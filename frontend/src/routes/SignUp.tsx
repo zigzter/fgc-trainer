@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
 import Form from "../components/Form";
-import { Paper, Button, TextField } from "@mui/material";
-import { signUp } from "aws-amplify/auth";
+import { Paper, Button, TextField, Alert } from "@mui/material";
+import { AuthError, signUp } from "aws-amplify/auth";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 type FormData = {
     username: string;
@@ -15,11 +17,21 @@ export default function SignUp() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
+    const navigate = useNavigate();
+    const [signUpError, setSignUpError] = useState("");
 
-    const onSubmit = (data: FormData) => {
-        signUp(data).then((output) => {
-            console.log(output);
-        });
+    const onSubmit = async (data: FormData) => {
+        try {
+            await signUp(data);
+            navigate("/");
+        } catch (e) {
+            console.error(e);
+            if (e instanceof AuthError) {
+                setSignUpError(e.message);
+            } else {
+                setSignUpError("Something went wrong.");
+            }
+        }
     };
 
     return (
@@ -44,8 +56,15 @@ export default function SignUp() {
                     {...register("password", { required: "Password is required" })}
                     helperText={errors.password?.message}
                 />
-                <Button type="submit">Sign Up</Button>
+                <Button variant="contained" type="submit">
+                    Sign Up
+                </Button>
             </Form>
+            {signUpError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                    {signUpError}
+                </Alert>
+            )}
         </Paper>
     );
 }

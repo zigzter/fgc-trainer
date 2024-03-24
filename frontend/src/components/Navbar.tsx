@@ -13,13 +13,14 @@ import { getCurrentUser, signOut } from "aws-amplify/auth";
 import GamepadIcon from "@mui/icons-material/Gamepad";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const pages = ["Routines", "History"];
 
 export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
     getCurrentUser().then((data) => {
         setIsLoggedIn(!!data);
@@ -33,8 +34,9 @@ export default function Navbar() {
         setAnchorElNav(null);
     };
 
-    const handleSignOutClick = () => {
-        signOut();
+    const handleSignOutClick = async () => {
+        await signOut();
+        navigate("/");
     };
 
     const renderAuthButtons = (sessionExists: boolean) => {

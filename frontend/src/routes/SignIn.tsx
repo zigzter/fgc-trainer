@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Alert, Paper, Button, TextField } from "@mui/material";
-import { signIn } from "aws-amplify/auth";
+import { AuthError, signIn } from "aws-amplify/auth";
 import Form from "../components/Form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -19,15 +19,18 @@ export default function SignIn() {
     const navigate = useNavigate();
     const [signInError, setSignInError] = useState("");
 
-    const onSubmit = (data: FormData) => {
-        signIn(data)
-            .then(() => {
-                navigate("/");
-            })
-            .catch((e) => {
-                console.error(e);
+    const onSubmit = async (data: FormData) => {
+        try {
+            await signIn(data);
+            navigate("/");
+        } catch (e) {
+            console.error(e);
+            if (e instanceof AuthError) {
                 setSignInError(e.message);
-            });
+            } else {
+                setSignInError("Something went wrong.");
+            }
+        }
     };
 
     return (
@@ -37,6 +40,7 @@ export default function SignIn() {
                     label="Username"
                     id="username"
                     {...register("username", { required: "Username is required" })}
+                    error={!!errors.username}
                     helperText={errors.username?.message}
                 />
                 <TextField
@@ -44,9 +48,12 @@ export default function SignIn() {
                     id="password"
                     type="password"
                     {...register("password", { required: "Password is required" })}
+                    error={!!errors.password}
                     helperText={errors.password?.message}
                 />
-                <Button type="submit">Sign In</Button>
+                <Button variant="contained" type="submit">
+                    Sign In
+                </Button>
             </Form>
             {signInError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
