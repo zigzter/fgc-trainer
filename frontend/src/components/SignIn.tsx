@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Alert, Paper, Button, TextField } from "@mui/material";
+import { Alert, Button, TextField } from "@mui/material";
 import { AuthError, signIn } from "aws-amplify/auth";
 import Form from "../components/Form";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,12 @@ type FormData = {
     password: string;
 };
 
-export default function SignIn() {
+interface Props {
+    index: number;
+    value: number;
+}
+
+export default function SignIn({ index, value }: Props) {
     const {
         register,
         handleSubmit,
@@ -34,7 +39,7 @@ export default function SignIn() {
     };
 
     return (
-        <Paper sx={{ width: 400, p: 4 }}>
+        <div role="tabpanel" hidden={value !== index}>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     label="Username"
@@ -60,6 +65,6 @@ export default function SignIn() {
                     {signInError}
                 </Alert>
             )}
-        </Paper>
+        </div>
     );
 }

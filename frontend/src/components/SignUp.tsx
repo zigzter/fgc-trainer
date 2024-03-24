@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import Form from "../components/Form";
-import { Paper, Button, TextField, Alert } from "@mui/material";
+import { Button, TextField, Alert } from "@mui/material";
 import { AuthError, signUp } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -11,7 +11,12 @@ type FormData = {
     email: string;
 };
 
-export default function SignUp() {
+interface Props {
+    index: number;
+    value: number;
+}
+
+export default function SignUp({ index, value }: Props) {
     const {
         register,
         handleSubmit,
@@ -35,7 +40,7 @@ export default function SignUp() {
     };
 
     return (
-        <Paper sx={{ p: 4, width: 400 }}>
+        <div role="tabpanel" hidden={value !== index}>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     label="Username"
@@ -65,6 +70,6 @@ export default function SignUp() {
                     {signUpError}
                 </Alert>
             )}
-        </Paper>
+        </div>
     );
 }
