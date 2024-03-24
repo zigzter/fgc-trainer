@@ -4,6 +4,7 @@ import { AuthError, signIn } from "aws-amplify/auth";
 import Form from "../components/Form";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 type FormData = {
     username: string;
@@ -20,15 +21,27 @@ export default function SignIn({ index, value }: Props) {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormData>();
+        watch,
+    } = useForm<FormData>({
+        defaultValues: {
+            username: "",
+            password: "",
+        },
+    });
     const navigate = useNavigate();
     const [signInError, setSignInError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const watchFields = watch();
+    const shouldDisableButton = Object.values(watchFields).some((value) => !value);
 
     const onSubmit = async (data: FormData) => {
         try {
+            setIsLoading(true);
             await signIn(data);
             navigate("/");
         } catch (e) {
+            setIsLoading(false);
             console.error(e);
             if (e instanceof AuthError) {
                 setSignInError(e.message);
@@ -56,9 +69,14 @@ export default function SignIn({ index, value }: Props) {
                     error={!!errors.password}
                     helperText={errors.password?.message}
                 />
-                <Button variant="contained" type="submit">
+                <LoadingButton
+                    disabled={shouldDisableButton}
+                    loading={isLoading}
+                    variant="contained"
+                    type="submit"
+                >
                     Sign In
-                </Button>
+                </LoadingButton>
             </Form>
             {signInError && (
                 <Alert severity="error" sx={{ mt: 2 }}>
