@@ -1,7 +1,6 @@
 import {
     AppBar,
     Box,
-    Button,
     Container,
     IconButton,
     Menu,
@@ -9,15 +8,22 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
+import { getCurrentUser, signOut } from "aws-amplify/auth";
 import GamepadIcon from "@mui/icons-material/Gamepad";
 import MenuIcon from "@mui/icons-material/Menu";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "./Button";
 
 const pages = ["Routines", "History"];
 
 export default function Navbar() {
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    getCurrentUser().then((data) => {
+        setIsLoggedIn(!!data);
+    });
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -25,6 +31,21 @@ export default function Navbar() {
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
+    };
+
+    const handleSignOutClick = () => {
+        signOut();
+    };
+
+    const renderAuthButtons = (sessionExists: boolean) => {
+        if (sessionExists) {
+            return <Button onClick={handleSignOutClick}>Sign Out</Button>;
+        }
+        return (
+            <Button component={Link} to="/signin">
+                Sign In
+            </Button>
+        );
     };
 
     return (
@@ -122,6 +143,7 @@ export default function Navbar() {
                             </Button>
                         ))}
                     </Box>
+                    <Box>{renderAuthButtons(isLoggedIn)}</Box>
                 </Toolbar>
             </Container>
         </AppBar>

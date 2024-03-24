@@ -1,9 +1,11 @@
 import { useForm } from "react-hook-form";
-import { Paper } from "@mui/material";
+import { Alert, Paper } from "@mui/material";
 import { signIn } from "aws-amplify/auth";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import Input from "../components/Input";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 type FormData = {
     username: string;
@@ -16,11 +18,18 @@ export default function SignIn() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
+    const navigate = useNavigate();
+    const [signInError, setSignInError] = useState("");
 
     const onSubmit = (data: FormData) => {
-        signIn(data).then((output) => {
-            console.log(output);
-        });
+        signIn(data)
+            .then(() => {
+                navigate("/");
+            })
+            .catch((e) => {
+                console.error(e);
+                setSignInError(e.message);
+            });
     };
 
     return (
@@ -41,6 +50,11 @@ export default function SignIn() {
                 />
                 <Button type="submit">Sign In</Button>
             </Form>
+            {signInError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                    {signInError}
+                </Alert>
+            )}
         </Paper>
     );
 }
