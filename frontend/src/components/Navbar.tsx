@@ -10,6 +10,7 @@ import {
     Typography,
 } from "@mui/material";
 import { signOut } from "aws-amplify/auth";
+import { Hub } from "aws-amplify/utils";
 import GamepadIcon from "@mui/icons-material/Gamepad";
 import MenuIcon from "@mui/icons-material/Menu";
 import React, { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ export default function Navbar() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // This is to handle page loads
         getUser().then((data) => {
             if (data) {
                 setCurrentUser(data.username);
@@ -31,6 +33,18 @@ export default function Navbar() {
                 setCurrentUser("");
             }
         });
+        // This is to handle sign in/out
+        const cancelHubListen = Hub.listen("auth", ({ payload }) => {
+            const { event } = payload;
+            if (event === "signedOut") {
+                setCurrentUser("");
+            } else if (event === "signedIn") {
+                setCurrentUser(payload.data.username);
+            }
+        });
+        return () => {
+            cancelHubListen();
+        };
     }, []);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
