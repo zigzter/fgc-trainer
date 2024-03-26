@@ -9,22 +9,29 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
-import { getCurrentUser, signOut } from "aws-amplify/auth";
+import { signOut } from "aws-amplify/auth";
 import GamepadIcon from "@mui/icons-material/Gamepad";
 import MenuIcon from "@mui/icons-material/Menu";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getUser } from "../utils/user";
 
 const pages = ["Routines", "History"];
 
 export default function Navbar() {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState("");
     const navigate = useNavigate();
 
-    getCurrentUser().then((data) => {
-        setIsLoggedIn(!!data);
-    });
+    useEffect(() => {
+        getUser().then((data) => {
+            if (data) {
+                setCurrentUser(data.username);
+            } else {
+                setCurrentUser("");
+            }
+        });
+    }, []);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -39,15 +46,18 @@ export default function Navbar() {
         navigate("/");
     };
 
-    const renderAuthButtons = (sessionExists: boolean) => {
-        if (sessionExists) {
+    const renderAuthButtons = (currUsername: string) => {
+        if (currUsername !== "") {
             return (
-                <Button
-                    sx={{ my: 2, color: "white", display: "block" }}
-                    onClick={handleSignOutClick}
-                >
-                    Sign Out
-                </Button>
+                <Box display="flex" alignItems="center">
+                    <Typography>{currUsername}</Typography>
+                    <Button
+                        sx={{ my: 2, color: "white", display: "block" }}
+                        onClick={handleSignOutClick}
+                    >
+                        Sign Out
+                    </Button>
+                </Box>
             );
         }
         return (
@@ -152,7 +162,7 @@ export default function Navbar() {
                             </Button>
                         ))}
                     </Box>
-                    <Box>{renderAuthButtons(isLoggedIn)}</Box>
+                    <Box>{renderAuthButtons(currentUser)}</Box>
                 </Toolbar>
             </Container>
         </AppBar>
