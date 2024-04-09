@@ -1,5 +1,6 @@
 class RoutinesController < ApplicationController
   def index
+    render :json => { test: "hello" }
   end
 
   def create
