@@ -15,10 +15,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_09_233526) do
   enable_extension "plpgsql"
 
   create_table "routines", force: :cascade do |t|
+    t.string "user_id", null: false
     t.string "game"
     t.string "title"
     t.text "notes"
-    t.jsonb "combos"
+    t.jsonb "combos", default: "[]"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
