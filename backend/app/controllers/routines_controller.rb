@@ -4,13 +4,13 @@ class RoutinesController < ApplicationController
   before_action :set_routine, only: %i[show update destroy]
   def index
     @routines = Routine.where(user_id: params[:user_id])
-    render json: @routine
+    render json: @routines
   end
 
   def create
-    @routine = Routine.new(routine_params.merge(user_id: params[:user_id]))
+    @routine = Routine.new(routine_params)
     if @routine.save
-      render json: @routine, status: created, location: @routine
+      render json: @routine, location: @routine
     else
       render json: @routine.errors
     end
@@ -42,6 +42,6 @@ class RoutinesController < ApplicationController
   end
 
   def routine_params
-    params.require(:routine).permit(:game, :title, :notes, :combos)
+    params.require(:routine).permit(:game, :title, :notes, :combos, :user_id)
   end
 end

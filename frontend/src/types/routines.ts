@@ -8,7 +8,7 @@ export interface Combo {
 }
 
 export interface Routine {
-    id: string;
+    userId: string;
     game: string;
     title: string;
     combos: Combo[];
