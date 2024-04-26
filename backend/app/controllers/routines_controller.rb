@@ -3,7 +3,7 @@
 class RoutinesController < ApplicationController
   before_action :set_routine, only: %i[show update destroy]
   def index
-    @routines = Routine.where(user_id: params[:user_id])
+    @routines = Routine.where(user_id: @current_user[:id])
     render json: @routines
   end
 

@@ -2,10 +2,11 @@ import { Autocomplete, Button, TextField } from "@mui/material";
 import Form from "./Form";
 import { LoadingButton } from "@mui/lab";
 import games from "../data/games";
+import { FormEventHandler } from "react";
 
 interface Props {
     onCancel: () => void;
-    onSubmit: () => void;
+    onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
 export default function RoutineForm({ onCancel, onSubmit }: Props) {
