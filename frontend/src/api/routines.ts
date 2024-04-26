@@ -1,0 +1,54 @@
+import { ROUTINES_URL } from "../config";
+import { getJWT } from "../utils/user";
+
+export interface RoutineResponse {
+    id: number;
+    user_id: string;
+    game: string;
+    title: string;
+    notes: string;
+    combos: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export class RoutineError extends Error {
+    statusCode: number;
+    constructor({ message, statusCode }: { message: string; statusCode: number }) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
+export interface RoutineFormData {
+    game: string;
+    title: string;
+    notes: string;
+}
+
+export const upsertRoutine = (method: "PUT" | "POST") => async (data: RoutineFormData) => {
+    const jwt = await getJWT();
+    const res = await fetch(ROUTINES_URL, {
+        method: method,
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+        body: JSON.stringify({
+            routine: {
+                title: data.title,
+                game: data.game,
+                notes: data.notes,
+            },
+        }),
+    });
+    if (!res.ok) {
+        throw new RoutineError({
+            message: res.statusText,
+            statusCode: res.status,
+        });
+    }
+    return res.json();
+};

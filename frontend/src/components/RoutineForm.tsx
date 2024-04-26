@@ -1,23 +1,38 @@
 import { Autocomplete, Button, TextField } from "@mui/material";
-import Form from "./Form";
 import { LoadingButton } from "@mui/lab";
+import { useMutation } from "@tanstack/react-query";
+import Form from "./Form";
 import games from "../data/games";
-import { FormEventHandler } from "react";
+import { useForm } from "react-hook-form";
+import { RoutineError, RoutineFormData, RoutineResponse, upsertRoutine } from "../api/routines";
 
 interface Props {
     onCancel: () => void;
-    onSubmit: FormEventHandler<HTMLFormElement>;
+    method: "POST" | "PUT";
 }
 
-export default function RoutineForm({ onCancel, onSubmit }: Props) {
+export default function RoutineForm({ onCancel, method }: Props) {
+    const { register, handleSubmit } = useForm<RoutineFormData>();
+
+    const mutation = useMutation<RoutineResponse, RoutineError, RoutineFormData>({
+        mutationFn: upsertRoutine(method),
+        mutationKey: ["routines"],
+    });
+
+    const onSubmit = (data: RoutineFormData) => {
+        mutation.mutate(data);
+    };
+
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
             <Autocomplete
                 options={games}
-                renderInput={(params) => <TextField {...params} label="Game" />}
+                renderInput={(params) => (
+                    <TextField {...params} label="Game" {...register("game")} />
+                )}
             />
-            <TextField label="Title" />
-            <TextField label="Notes" />
+            <TextField label="Title" {...register("title")} />
+            <TextField label="Notes" {...register("notes")} />
             <Button variant="outlined" onClick={onCancel}>
                 Cancel
             </Button>
