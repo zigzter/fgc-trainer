@@ -52,3 +52,20 @@ export const upsertRoutine = (method: "PUT" | "POST") => async (data: RoutineFor
     }
     return res.json();
 };
+
+export const getRoutine = async (id: string) => {
+    const jwt = await getJWT();
+    const res = await fetch(`${ROUTINES_URL}/${id}`, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+    });
+    if (!res.ok) {
+        throw new RoutineError({
+            message: res.statusText,
+            statusCode: res.status,
+        });
+    }
+    return res.json();
+};
