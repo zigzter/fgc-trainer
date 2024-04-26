@@ -8,7 +8,7 @@ class RoutinesController < ApplicationController
   end
 
   def create
-    @routine = Routine.new(routine_params)
+    @routine = Routine.new(routine_params.merge(user_id: @current_user[:id], combos: "[]"))
     if @routine.save
       render json: @routine, location: @routine
     else
@@ -36,7 +36,7 @@ class RoutinesController < ApplicationController
 
   def set_routine
     @routine = Routine.find(params[:id])
-    return unless @routine.user_id != params[:user_id]
+    return unless @routine.user_id != @current_user[:id]
 
     render json: { error: 'Not authorized' }, status: :unauthorized
   end
