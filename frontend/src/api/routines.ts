@@ -26,32 +26,34 @@ export interface RoutineFormData {
     notes: string;
 }
 
-export const upsertRoutine = (method: "PUT" | "POST") => async (data: RoutineFormData) => {
-    const jwt = await getJWT();
-    const res = await fetch(ROUTINES_URL, {
-        method: method,
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer ${jwt?.string || ""}`,
-        },
-        body: JSON.stringify({
-            routine: {
-                title: data.title,
-                game: data.game,
-                notes: data.notes,
+export const upsertRoutine =
+    (method: "PUT" | "POST", id?: string) => async (data: RoutineFormData) => {
+        const jwt = await getJWT();
+        // NOTE: Might be better to break this function out into two separate methods
+        const res = await fetch(method === "PUT" ? `${ROUTINES_URL}/${id}` : ROUTINES_URL, {
+            method: method,
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${jwt?.string || ""}`,
             },
-        }),
-    });
-    if (!res.ok) {
-        throw new RoutineError({
-            message: res.statusText,
-            statusCode: res.status,
+            body: JSON.stringify({
+                routine: {
+                    title: data.title,
+                    game: data.game,
+                    notes: data.notes,
+                },
+            }),
         });
-    }
-    return res.json();
-};
+        if (!res.ok) {
+            throw new RoutineError({
+                message: res.statusText,
+                statusCode: res.status,
+            });
+        }
+        return res.json();
+    };
 
 export const getRoutine = async (id: string) => {
     const jwt = await getJWT();

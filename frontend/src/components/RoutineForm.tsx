@@ -1,7 +1,7 @@
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Form from "./Form";
 import games from "../data/games";
 import { RoutineError, RoutineFormData, RoutineResponse, upsertRoutine } from "../api/routines";
@@ -10,15 +10,16 @@ interface Props {
     onCancel: () => void;
     method: "POST" | "PUT";
     initialData?: RoutineFormData;
+    routineId?: string;
 }
 
-export default function RoutineForm({ onCancel, method, initialData }: Props) {
-    const { register, handleSubmit } = useForm<RoutineFormData>({
+export default function RoutineForm({ onCancel, method, initialData, routineId }: Props) {
+    const { register, handleSubmit, control } = useForm<RoutineFormData>({
         defaultValues: initialData,
     });
 
     const mutation = useMutation<RoutineResponse, RoutineError, RoutineFormData>({
-        mutationFn: upsertRoutine(method),
+        mutationFn: upsertRoutine(method, routineId),
         mutationKey: ["routines"],
     });
 
@@ -28,10 +29,17 @@ export default function RoutineForm({ onCancel, method, initialData }: Props) {
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
-            <Autocomplete
-                options={games}
-                renderInput={(params) => (
-                    <TextField {...params} label="Game" {...register("game")} />
+            <Controller
+                name="game"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                    <Autocomplete
+                        id="game"
+                        options={games}
+                        value={value}
+                        onChange={(_, newValue) => onChange(newValue)}
+                        renderInput={(params) => <TextField {...params} label="Game" />}
+                    />
                 )}
             />
             <TextField label="Title" {...register("title")} />
@@ -40,7 +48,7 @@ export default function RoutineForm({ onCancel, method, initialData }: Props) {
                 Cancel
             </Button>
             <LoadingButton variant="contained" type="submit">
-                Create
+                {method === "POST" ? "Create" : "Update"}
             </LoadingButton>
         </Form>
     );
