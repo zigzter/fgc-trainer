@@ -49,6 +49,7 @@ export default function Routines() {
             ) : (
                 <Button onClick={() => setIsCreating(true)}>New Routine</Button>
             )}
+            {error && <p>Something went wrong.</p>}
             {data &&
                 data.map((routine) => (
                     <div key={routine.id}>

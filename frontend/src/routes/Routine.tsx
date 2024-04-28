@@ -5,15 +5,19 @@ import { RoutineResponse, getRoutine } from "../api/routines";
 import { Button } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
 
-const routineQuery = (id: string) => ({
+const routineQuery = (id: string, initialData?: RoutineResponse) => ({
     queryKey: ["routine", id],
     queryFn: async () => getRoutine(id),
+    initialData,
 });
 
 export const loader =
     (queryClient: QueryClient) =>
     async ({ params }) => {
-        const query = routineQuery(params.routineId);
+        const initialData = queryClient
+            .getQueryData<RoutineResponse[]>(["routines"])
+            ?.find((routine) => routine.id === params.routineId);
+        const query = routineQuery(params.routineId, initialData);
         return queryClient.getQueryData(query.queryKey) ?? (await queryClient.fetchQuery(query));
     };
 
