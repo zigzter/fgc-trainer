@@ -2,7 +2,7 @@ import { ROUTINES_URL } from "../config";
 import { getJWT } from "../utils/user";
 
 export interface RoutineResponse {
-    id: number;
+    id: string;
     user_id: string;
     game: string;
     title: string;
@@ -58,6 +58,24 @@ export const upsertRoutine =
 export const getRoutine = async (id: string) => {
     const jwt = await getJWT();
     const res = await fetch(`${ROUTINES_URL}/${id}`, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+    });
+    if (!res.ok) {
+        throw new RoutineError({
+            message: res.statusText,
+            statusCode: res.status,
+        });
+    }
+    return res.json();
+};
+
+export const deleteRoutine = async (id: string) => {
+    const jwt = await getJWT();
+    const res = await fetch(`${ROUTINES_URL}/${id}`, {
+        method: "DELETE",
         headers: {
             Accept: "application/json",
             Authorization: `Bearer ${jwt?.string || ""}`,
