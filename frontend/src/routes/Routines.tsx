@@ -1,14 +1,25 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { ROUTINES_URL } from "../config";
 import RoutineForm from "../components/RoutineForm";
 import { getJWT } from "../utils/user";
-import { RoutineResponse } from "../api/routines";
+import { RoutineResponse, deleteRoutine } from "../api/routines";
+import { MoreHoriz } from "@mui/icons-material";
 
 export default function Routines() {
     const [isCreating, setIsCreating] = useState(false);
+    const queryClient = useQueryClient();
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     const { data, error, isFetching } = useQuery<any, Error, RoutineResponse[]>({
         queryKey: ["routines"],
         queryFn: async () => {
@@ -23,6 +34,13 @@ export default function Routines() {
         },
     });
 
+    const { isPending, mutate } = useMutation({
+        mutationFn: (id: string) => deleteRoutine(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["routines"] });
+        },
+    });
+
     return (
         <>
             <h1>Routines</h1>
@@ -33,8 +51,23 @@ export default function Routines() {
             )}
             {data &&
                 data.map((routine) => (
-                    <div>
+                    <div key={routine.id}>
                         <Link to={`/routines/${routine.id}`}>{routine.title}</Link>
+                        <IconButton onClick={handleClick}>
+                            <MoreHoriz />
+                        </IconButton>
+                        <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                            <MenuItem onClick={() => null} disabled={isPending}>
+                                Edit
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => mutate(routine.id)}
+                                color="error"
+                                disabled={isPending}
+                            >
+                                Delete
+                            </MenuItem>
+                        </Menu>
                     </div>
                 ))}
         </>

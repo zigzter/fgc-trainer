@@ -87,5 +87,4 @@ export const deleteRoutine = async (id: string) => {
             statusCode: res.status,
         });
     }
-    return res.json();
 };

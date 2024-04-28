@@ -1,7 +1,7 @@
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { RoutineResponse, deleteRoutine, getRoutine } from "../api/routines";
+import { RoutineResponse, getRoutine } from "../api/routines";
 import { Button } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
 
@@ -23,9 +23,6 @@ export default function Routine() {
     const { data: routine, isSuccess } = useQuery<any, Error, RoutineResponse>(
         routineQuery(params.routineId!),
     );
-    const { isPending, mutate } = useMutation({
-        mutationFn: () => deleteRoutine(routine!.id),
-    });
 
     useEffect(() => {
         console.log(routine);
@@ -47,9 +44,6 @@ export default function Routine() {
                 ) : (
                     <>
                         <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
-                        <Button onClick={() => mutate()} color="error">
-                            Delete
-                        </Button>
                     </>
                 )}
             </>
