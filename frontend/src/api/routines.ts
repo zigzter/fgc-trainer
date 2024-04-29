@@ -26,6 +26,17 @@ export interface RoutineFormData {
     notes: string;
 }
 
+export const fetchRoutines = async () => {
+    const jwt = await getJWT();
+    const data = await fetch(ROUTINES_URL, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+    });
+    return data.json();
+};
+
 export const upsertRoutine =
     (method: "PUT" | "POST", id?: string) => async (data: RoutineFormData) => {
         const jwt = await getJWT();

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Button, IconButton, Menu, MenuItem } from "@mui/material";
-import { ROUTINES_URL } from "../config";
-import RoutineForm from "../components/RoutineForm";
-import { getJWT } from "../utils/user";
-import { RoutineResponse, deleteRoutine } from "../api/routines";
 import { MoreHoriz } from "@mui/icons-material";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import RoutineForm from "../components/RoutineForm";
+import { RoutineResponse, deleteRoutine, fetchRoutines } from "../api/routines";
 
 export default function Routines() {
     const [isCreating, setIsCreating] = useState(false);
@@ -22,16 +20,7 @@ export default function Routines() {
 
     const { data, error, isFetching } = useQuery<any, Error, RoutineResponse[]>({
         queryKey: ["routines"],
-        queryFn: async () => {
-            const jwt = await getJWT();
-            const data = await fetch(ROUTINES_URL, {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: `Bearer ${jwt?.string || ""}`,
-                },
-            });
-            return data.json();
-        },
+        queryFn: fetchRoutines,
     });
 
     const { isPending, mutate } = useMutation({
@@ -50,7 +39,10 @@ export default function Routines() {
                 <Button onClick={() => setIsCreating(true)}>New Routine</Button>
             )}
             {error && <p>Something went wrong.</p>}
-            {data &&
+            {isFetching ? (
+                <p>Loading...</p>
+            ) : (
+                data &&
                 data.map((routine) => (
                     <div key={routine.id}>
                         <Link to={`/routines/${routine.id}`}>{routine.title}</Link>
@@ -70,7 +62,8 @@ export default function Routines() {
                             </MenuItem>
                         </Menu>
                     </div>
-                ))}
+                ))
+            )}
         </>
     );
 }

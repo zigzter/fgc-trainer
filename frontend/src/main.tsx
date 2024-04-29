@@ -55,6 +55,7 @@ const router = createBrowserRouter([
             {
                 path: "routines/:routineId",
                 element: <Routine />,
+                errorElement: null,
                 loader: routineLoader(queryClient),
             },
             {

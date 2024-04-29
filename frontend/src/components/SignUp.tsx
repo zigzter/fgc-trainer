@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import Form from "../components/Form";
-import { Button, TextField, Alert } from "@mui/material";
+import { TextField, Alert } from "@mui/material";
 import { AuthError, signUp } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import Form from "../components/Form";
 
 type FormData = {
     username: string;

@@ -51,7 +51,7 @@ export default function RoutineForm({ onCancel, method, initialData, routineId }
             <Button variant="outlined" onClick={onCancel}>
                 Cancel
             </Button>
-            <LoadingButton variant="contained" type="submit">
+            <LoadingButton loading={mutation.isPending} variant="contained" type="submit">
                 {method === "POST" ? "Create" : "Update"}
             </LoadingButton>
         </Form>
