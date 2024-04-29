@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import Form from "./Form";
 import games from "../data/games";
-import { RoutineError, RoutineFormData, RoutineResponse, upsertRoutine } from "../api/routines";
+import { RoutineFormData, upsertRoutine } from "../api/routines";
 
 interface Props {
     onCancel: () => void;
@@ -19,11 +19,11 @@ export default function RoutineForm({ onCancel, method, initialData, routineId }
     });
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<RoutineResponse, RoutineError, RoutineFormData>({
+    const mutation = useMutation({
         mutationFn: upsertRoutine(method, routineId),
         mutationKey: ["routines"],
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["routines"] });
+            queryClient.invalidateQueries({ queryKey: ["routines", routineId] });
         },
     });
 

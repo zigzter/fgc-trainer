@@ -26,19 +26,26 @@ export interface RoutineFormData {
     notes: string;
 }
 
-export const fetchRoutines = async () => {
+export const getRoutines = async (): Promise<RoutineResponse[]> => {
     const jwt = await getJWT();
-    const data = await fetch(ROUTINES_URL, {
+    const res = await fetch(ROUTINES_URL, {
         headers: {
             Accept: "application/json",
             Authorization: `Bearer ${jwt?.string || ""}`,
         },
     });
-    return data.json();
+    if (!res.ok) {
+        throw new RoutineError({
+            message: res.statusText,
+            statusCode: res.status,
+        });
+    }
+    return res.json();
 };
 
 export const upsertRoutine =
-    (method: "PUT" | "POST", id?: string) => async (data: RoutineFormData) => {
+    (method: "PUT" | "POST", id?: string) =>
+    async (data: RoutineFormData): Promise<RoutineResponse> => {
         const jwt = await getJWT();
         // NOTE: Might be better to break this function out into two separate methods
         const res = await fetch(method === "PUT" ? `${ROUTINES_URL}/${id}` : ROUTINES_URL, {
@@ -66,7 +73,7 @@ export const upsertRoutine =
         return res.json();
     };
 
-export const getRoutine = async (id: string) => {
+export const getRoutine = async (id: string): Promise<RoutineResponse> => {
     const jwt = await getJWT();
     const res = await fetch(`${ROUTINES_URL}/${id}`, {
         headers: {
@@ -83,7 +90,7 @@ export const getRoutine = async (id: string) => {
     return res.json();
 };
 
-export const deleteRoutine = async (id: string) => {
+export const deleteRoutine = async (id: string): Promise<void> => {
     const jwt = await getJWT();
     const res = await fetch(`${ROUTINES_URL}/${id}`, {
         method: "DELETE",
