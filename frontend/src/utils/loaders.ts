@@ -18,7 +18,7 @@ export const routineLoader =
             .getQueryData<RoutineResponse[]>(["routines"])
             ?.find((routine) => routine.id === params.routineId);
         const query = routineQuery(params.routineId, initialData);
-        return queryClient.getQueryData(query.queryKey) ?? (await queryClient.fetchQuery(query));
+        return queryClient.ensureQueryData(query);
     };
 
 export async function rootLoader() {
