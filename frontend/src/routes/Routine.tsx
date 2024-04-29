@@ -1,33 +1,21 @@
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { useParams, Params } from "react-router-dom";
-import { RoutineResponse, getRoutine } from "../api/routines";
+import { useParams } from "react-router-dom";
+import { RoutineResponse } from "../api/routines";
 import { Button } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
-
-const routineQuery = (id: string, initialData?: RoutineResponse) => ({
-    queryKey: ["routine", id],
-    queryFn: async () => getRoutine(id),
-    initialData,
-});
-
-export const loader =
-    (queryClient: QueryClient) =>
-    async ({ params }: { params: Params<"routineId"> }) => {
-        const initialData = queryClient
-            .getQueryData<RoutineResponse[]>(["routines"])
-            ?.find((routine) => routine.id === params.routineId);
-        const query = routineQuery(params.routineId, initialData);
-        return queryClient.getQueryData(query.queryKey) ?? (await queryClient.fetchQuery(query));
-    };
+import { routineQuery } from "../utils/loaders";
 
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
     const params = useParams();
-    const { data: routine, isSuccess } = useQuery<any, Error, RoutineResponse>(
-        routineQuery(params.routineId!),
-    );
+    const {
+        data: routine,
+        isSuccess,
+        error,
+    } = useQuery<any, Error, RoutineResponse>(routineQuery(params.routineId!));
 
+    console.log({ error });
     if (isSuccess) {
         return (
             <>

@@ -4,13 +4,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import { Amplify } from "aws-amplify";
-import Root, { loader as rootLoader } from "./routes/Root.tsx";
+import Root from "./routes/Root.tsx";
 import ErrorPage from "./ErrorPage.tsx";
 import Index from "./routes/index.tsx";
 import Routines from "./routes/Routines.tsx";
 import History from "./routes/History.tsx";
 import Auth from "./routes/Auth.tsx";
-import Routine, { loader as routineLoader } from "./routes/Routine.tsx";
+import Routine from "./routes/Routine.tsx";
+import { rootLoader, routineLoader } from "./utils/loaders.ts";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
             {
                 path: "routines/:routineId",
                 element: <Routine />,
-                errorElement: null,
+                errorElement: <ErrorPage />,
                 loader: routineLoader(queryClient),
             },
             {
