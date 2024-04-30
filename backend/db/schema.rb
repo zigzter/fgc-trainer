@@ -10,18 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_09_233526) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_30_030254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "combos", id: :string, force: :cascade do |t|
+    t.string "name"
+    t.text "inputs", default: [], array: true
+    t.text "notes"
+    t.string "routine_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["routine_id"], name: "index_combos_on_routine_id"
+  end
 
   create_table "routines", id: :string, force: :cascade do |t|
     t.string "user_id", null: false
     t.string "game"
     t.string "title"
     t.text "notes"
-    t.jsonb "combos", default: "[]"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "combos", "routines"
 end

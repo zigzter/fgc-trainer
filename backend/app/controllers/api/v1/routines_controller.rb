@@ -12,7 +12,7 @@ module Api
       end
 
       def create
-        @routine = Routine.new(routine_params.merge(user_id: @current_user[:id], combos: '[]'))
+        @routine = Routine.new(routine_params.merge(user_id: @current_user[:id]))
         if @routine.save
           render json: @routine, status: :created
         else

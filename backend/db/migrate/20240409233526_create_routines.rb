@@ -6,7 +6,6 @@ class CreateRoutines < ActiveRecord::Migration[7.1]
       t.string :game
       t.string :title
       t.text :notes
-      t.jsonb :combos, default: '[]'
 
       t.timestamps
     end
