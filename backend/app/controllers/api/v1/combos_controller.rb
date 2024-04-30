@@ -7,7 +7,7 @@ module Api
       rescue_from ActiveRecord::RecordNotDestroyed, with: :not_destroyed
 
       def index
-        @combos = Combo.where(routine_id: combo_params[:routine_id])
+        @combos = Combo.where(routine_id: params[:routine_id])
         render json: @combos
       end
 
@@ -47,7 +47,7 @@ module Api
       end
 
       def combo_params
-        params.require(:combo).permit(:name, :inputs, :notes, :routine_id)
+        params.require(:combo).permit(:name, { inputs: [] }, :notes, :routine_id)
       end
     end
   end

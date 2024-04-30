@@ -5,6 +5,7 @@ import { Button, CircularProgress } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
 import { routineQuery } from "../utils/loaders";
 import ComboForm from "../components/ComboForm";
+import ComboList from "../components/ComboList";
 
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
@@ -40,8 +41,9 @@ export default function Routine() {
                     <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
                 </>
             )}
+            <ComboList routineId={routine.id} />
             <Button variant="contained">Add Combo</Button>
-            <ComboForm game={routine.game} />
+            <ComboForm game={routine.game} routineId={routine.id} />
         </>
     );
 }

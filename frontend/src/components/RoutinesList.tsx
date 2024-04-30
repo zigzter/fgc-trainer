@@ -4,14 +4,13 @@ import {
     Card,
     CardActionArea,
     CardActions,
-    CardContent,
     CircularProgress,
     IconButton,
     Menu,
     MenuItem,
     Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteRoutine, getRoutines } from "../api/routines";
 

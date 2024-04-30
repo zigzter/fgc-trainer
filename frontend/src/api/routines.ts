@@ -95,7 +95,6 @@ export const deleteRoutine = async (id: string): Promise<void> => {
     const res = await fetch(`${ROUTINES_URL}/${id}`, {
         method: "DELETE",
         headers: {
-            Accept: "application/json",
             Authorization: `Bearer ${jwt?.string || ""}`,
         },
     });

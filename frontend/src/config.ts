@@ -3,3 +3,4 @@ export const API_URL = BACKEND_URL + "/api/v1";
 export const SIGN_IN_URL = API_URL + "/auth/sign_in";
 export const SIGN_UP_URL = API_URL + "/auth/sign_up";
 export const ROUTINES_URL = API_URL + "/routines";
+export const COMBOS_URL = API_URL + "/combos";

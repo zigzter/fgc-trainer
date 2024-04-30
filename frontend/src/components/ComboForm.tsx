@@ -3,9 +3,13 @@ import { Controller, useForm } from "react-hook-form";
 import { smashUltimate } from "../data/smash_ultimate";
 import games from "../data/games";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { upsertCombo } from "../api/combos";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
     game: (typeof games)[number];
+    routineId?: string;
 }
 
 const inputs = {
@@ -17,9 +21,13 @@ const inputs = {
     "Streetfighter 6": [],
 } as const;
 
-export default function ComboForm({ game }: Props) {
-    const { register, control } = useForm();
+export default function ComboForm({ game, routineId }: Props) {
+    const { register, handleSubmit, control } = useForm();
     const [currentCombo, setCurrentCombo] = useState<string[]>([]);
+
+    const mutation = useMutation({
+        mutationFn: upsertCombo("POST", routineId),
+    });
 
     const updateCombos = (val: string) => {
         setCurrentCombo((prev) => [...prev, val]);
@@ -29,10 +37,14 @@ export default function ComboForm({ game }: Props) {
         setCurrentCombo((prev) => prev.filter((_, index) => index !== targetIndex));
     };
 
+    const onSubmit = (data) => {
+        mutation.mutate({ ...data, inputs: currentCombo });
+    };
+
     return (
-        <div>
-            <TextField label="Name" />
-            <TextField label="Notes" />
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <TextField label="Name" {...register("name")} />
+            <TextField label="Notes" {...register("notes")} />
             {currentCombo.map((combo, index) => (
                 <Chip key={index} label={combo} onDelete={() => deleteInput(index)} />
             ))}
@@ -53,7 +65,9 @@ export default function ComboForm({ game }: Props) {
                 )}
             />
             <Button variant="outlined">Cancel</Button>
-            <Button variant="contained">Confirm</Button>
-        </div>
+            <LoadingButton loading={mutation.isPending} type="submit" variant="contained">
+                Confirm
+            </LoadingButton>
+        </form>
     );
 }
