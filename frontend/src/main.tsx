@@ -5,7 +5,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import { Amplify } from "aws-amplify";
 import Root from "./routes/Root.tsx";
-import ErrorPage from "./ErrorPage.tsx";
+import RootError from "./errors/RootError.tsx";
+import RoutineError from "./errors/RoutineError.tsx";
 import Index from "./routes/index.tsx";
 import Routines from "./routes/Routines.tsx";
 import History from "./routes/History.tsx";
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
     {
         path: "/",
         element: <Root />,
-        errorElement: <ErrorPage />,
+        errorElement: <RootError />,
         loader: rootLoader,
         children: [
             {
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
             {
                 path: "routines/:routineId",
                 element: <Routine />,
-                errorElement: <ErrorPage />,
+                errorElement: <RoutineError />,
                 loader: routineLoader(queryClient),
             },
             {

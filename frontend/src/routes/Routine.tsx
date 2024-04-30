@@ -10,7 +10,7 @@ import ComboList from "../components/ComboList";
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
     const params = useParams();
-    const { data: routine, error, isPending, isError } = useQuery(routineQuery(params.routineId!));
+    const { data: routine, isPending, isSuccess } = useQuery(routineQuery(params.routineId!));
 
     if (isPending) {
         return (
@@ -20,30 +20,28 @@ export default function Routine() {
         );
     }
 
-    if (isError) {
-        return <p>{error.message}</p>;
+    if (isSuccess) {
+        return (
+            <>
+                <h1>{routine.title}</h1>
+                <p>{routine.game}</p>
+                <p>{routine.notes}</p>
+                {isEditing ? (
+                    <RoutineForm
+                        onCancel={() => setIsEditing(false)}
+                        method="PUT"
+                        initialData={routine}
+                        routineId={routine.id}
+                    />
+                ) : (
+                    <>
+                        <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
+                    </>
+                )}
+                <ComboList routineId={routine.id} />
+                <Button variant="contained">Add Combo</Button>
+                <ComboForm game={routine.game} routineId={routine.id} />
+            </>
+        );
     }
-
-    return (
-        <>
-            <h1>{routine.title}</h1>
-            <p>{routine.game}</p>
-            <p>{routine.notes}</p>
-            {isEditing ? (
-                <RoutineForm
-                    onCancel={() => setIsEditing(false)}
-                    method="PUT"
-                    initialData={routine}
-                    routineId={routine.id}
-                />
-            ) : (
-                <>
-                    <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
-                </>
-            )}
-            <ComboList routineId={routine.id} />
-            <Button variant="contained">Add Combo</Button>
-            <ComboForm game={routine.game} routineId={routine.id} />
-        </>
-    );
 }
