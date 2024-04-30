@@ -1,30 +1,12 @@
-import { useState } from "react";
-import { MoreHoriz } from "@mui/icons-material";
-import {
-    Card,
-    CardActionArea,
-    CardActions,
-    CircularProgress,
-    IconButton,
-    Menu,
-    MenuItem,
-    Typography,
-} from "@mui/material";
+import { Card, CardActionArea, CardActions, CircularProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteRoutine, getRoutines } from "../api/routines";
+import PopupMenu from "./PopupMenu";
 
 export default function RoutinesList() {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const open = Boolean(anchorEl);
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
     const {
         data: routines,
@@ -64,21 +46,7 @@ export default function RoutinesList() {
                 <Typography variant="h5">{routine.title}</Typography>
             </CardActionArea>
             <CardActions>
-                <IconButton onClick={handleClick}>
-                    <MoreHoriz />
-                </IconButton>
-                <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                    <MenuItem onClick={() => null} disabled={mutation.isPending}>
-                        Edit
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => mutation.mutate(routine.id)}
-                        color="error"
-                        disabled={mutation.isPending}
-                    >
-                        Delete
-                    </MenuItem>
-                </Menu>
+                <PopupMenu onDelete={() => mutation.mutate(routine.id)} onEdit={() => null} />
             </CardActions>
         </Card>
     ));
