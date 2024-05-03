@@ -23,7 +23,12 @@ const inputs = {
 } as const;
 
 export default function ComboForm({ game, routineId, onCancel }: Props) {
-    const { register, handleSubmit, control } = useForm<ComboFormData>();
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<ComboFormData>();
 
     const mutation = useMutation({
         mutationFn: upsertCombo("POST", routineId),
@@ -35,7 +40,12 @@ export default function ComboForm({ game, routineId, onCancel }: Props) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField label="Name" {...register("name")} />
+            <TextField
+                label="Name"
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                {...register("name", { required: "Name is required" })}
+            />
             <TextField label="Notes" {...register("notes")} />
             <Controller
                 name="inputs"
@@ -46,6 +56,7 @@ export default function ComboForm({ game, routineId, onCancel }: Props) {
                         multiple
                         freeSolo
                         autoComplete
+                        // Allow duplicates
                         isOptionEqualToValue={() => false}
                         options={inputs[game]}
                         value={value}

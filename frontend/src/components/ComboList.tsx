@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteCombo, getCombos } from "../api/combos";
-import { Card, CardActions, CardContent, Chip, CircularProgress, Typography } from "@mui/material";
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Chip,
+    CircularProgress,
+    Stack,
+    Typography,
+} from "@mui/material";
 import PopupMenu from "./PopupMenu";
 
 interface Props {
@@ -40,12 +48,14 @@ export default function ComboList({ routineId }: Props) {
 
     return combos.map((combo) => (
         <Card key={combo.id} sx={{ display: "flex", my: 2 }}>
-            <CardContent>
-                <Typography>{combo.name}</Typography>
-                <Typography>{combo.notes}</Typography>
-                {combo.inputs.map((input, i) => (
-                    <Chip key={`${input}-${i}`} label={input} />
-                ))}
+            <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6">{combo.name}</Typography>
+                {combo.notes && <Typography>Notes: {combo.notes}</Typography>}
+                <Stack direction="row" spacing={1}>
+                    {combo.inputs.map((input, i) => (
+                        <Chip key={`${input}-${i}`} label={input} color="primary" />
+                    ))}
+                </Stack>
             </CardContent>
             <CardActions>
                 <PopupMenu onDelete={() => mutation.mutate(combo.id)} onEdit={() => null} />
