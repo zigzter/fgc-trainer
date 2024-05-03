@@ -5,6 +5,7 @@ class CreateCombos < ActiveRecord::Migration[7.1]
       t.string :name
       t.text :inputs, array: true, default: []
       t.text :notes
+      t.integer :reps
 
       t.string :routine_id, null: false
 

@@ -18,6 +18,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_030254) do
     t.string "name"
     t.text "inputs", default: [], array: true
     t.text "notes"
+    t.integer "reps"
     t.string "routine_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

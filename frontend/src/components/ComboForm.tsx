@@ -67,6 +67,13 @@ export default function ComboForm({ game, routineId, onCancel }: Props) {
                     />
                 )}
             />
+            <TextField
+                label="Reps"
+                inputMode="numeric"
+                error={!!errors.reps}
+                helperText={errors.reps?.message}
+                {...register("reps", { valueAsNumber: true, validate: (val) => val > 0 })}
+            />
             <Button onClick={onCancel} variant="outlined">
                 Cancel
             </Button>

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Button, CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Divider } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
 import { routineQuery } from "../utils/loaders";
 import ComboForm from "../components/ComboForm";
@@ -51,6 +51,7 @@ export default function Routine() {
                         <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
                     </>
                 )}
+                <Divider sx={{ my: 2 }} />
                 <ComboList routineId={routine.id} />
                 {isAddingCombo ? (
                     <ComboForm
