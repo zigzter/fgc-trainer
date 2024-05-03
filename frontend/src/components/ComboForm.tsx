@@ -4,11 +4,13 @@ import { smashUltimate } from "../data/smash_ultimate";
 import games from "../data/games";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { upsertCombo } from "../api/combos";
+import { ComboFormData, upsertCombo } from "../api/combos";
 import { LoadingButton } from "@mui/lab";
 
 interface Props {
     game: (typeof games)[number];
+    onCancel: () => void;
+    initialData?: ComboFormData;
     routineId?: string;
 }
 
@@ -21,8 +23,8 @@ const inputs = {
     "Streetfighter 6": [],
 } as const;
 
-export default function ComboForm({ game, routineId }: Props) {
-    const { register, handleSubmit, control } = useForm();
+export default function ComboForm({ game, routineId, onCancel }: Props) {
+    const { register, handleSubmit, control } = useForm<ComboFormData>();
     const [currentCombo, setCurrentCombo] = useState<string[]>([]);
 
     const mutation = useMutation({
@@ -37,8 +39,8 @@ export default function ComboForm({ game, routineId }: Props) {
         setCurrentCombo((prev) => prev.filter((_, index) => index !== targetIndex));
     };
 
-    const onSubmit = (data) => {
-        mutation.mutate({ ...data, inputs: currentCombo });
+    const onSubmit = (data: ComboFormData) => {
+        mutation.mutate(data);
     };
 
     return (
@@ -64,7 +66,9 @@ export default function ComboForm({ game, routineId }: Props) {
                     />
                 )}
             />
-            <Button variant="outlined">Cancel</Button>
+            <Button onClick={onCancel} variant="outlined">
+                Cancel
+            </Button>
             <LoadingButton loading={mutation.isPending} type="submit" variant="contained">
                 Confirm
             </LoadingButton>

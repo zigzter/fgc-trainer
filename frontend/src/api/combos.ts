@@ -11,6 +11,13 @@ export interface ComboResponse {
     updated_at: string;
 }
 
+export interface ComboFormData {
+    game: string;
+    name: string;
+    notes: string;
+    inputs: string[];
+}
+
 export const getCombos = async (id: string): Promise<ComboResponse[]> => {
     const jwt = await getJWT();
     const res = await fetch(COMBOS_URL + `?routine_id=${id}`, {
@@ -27,7 +34,7 @@ export const getCombos = async (id: string): Promise<ComboResponse[]> => {
 
 export const upsertCombo =
     (method: "PUT" | "POST", id?: string) =>
-    async (data): Promise<ComboResponse> => {
+    async (data: ComboFormData): Promise<ComboResponse> => {
         const jwt = await getJWT();
         console.log(data);
         const res = await fetch(method === "PUT" ? `${COMBOS_URL}/${id}` : COMBOS_URL, {

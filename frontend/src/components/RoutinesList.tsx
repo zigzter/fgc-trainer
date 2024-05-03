@@ -46,7 +46,10 @@ export default function RoutinesList() {
                 <Typography variant="h5">{routine.title}</Typography>
             </CardActionArea>
             <CardActions>
-                <PopupMenu onDelete={() => mutation.mutate(routine.id)} onEdit={() => null} />
+                <PopupMenu
+                    onDelete={() => mutation.mutate(routine.id)}
+                    onEdit={() => navigate(`/routines/${routine.id}`, { state: { edit: true } })}
+                />
             </CardActions>
         </Card>
     ));

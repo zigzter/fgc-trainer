@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { Button, CircularProgress } from "@mui/material";
 import RoutineForm from "../components/RoutineForm";
 import { routineQuery } from "../utils/loaders";
@@ -9,8 +9,21 @@ import ComboList from "../components/ComboList";
 
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
+    const [isAddingCombo, setIsAddingCombo] = useState(false);
     const params = useParams();
-    const { data: routine, isPending, isSuccess } = useQuery(routineQuery(params.routineId!));
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.edit) {
+            setIsEditing(true);
+        }
+    }, [location.state]);
+
+    if (!params.routineId) {
+        throw new Error("Missing routine ID");
+    }
+
+    const { data: routine, isPending, isSuccess } = useQuery(routineQuery(params.routineId));
 
     if (isPending) {
         return (
@@ -23,9 +36,6 @@ export default function Routine() {
     if (isSuccess) {
         return (
             <>
-                <h1>{routine.title}</h1>
-                <p>{routine.game}</p>
-                <p>{routine.notes}</p>
                 {isEditing ? (
                     <RoutineForm
                         onCancel={() => setIsEditing(false)}
@@ -35,12 +45,24 @@ export default function Routine() {
                     />
                 ) : (
                     <>
+                        <h1>{routine.title}</h1>
+                        <p>{routine.game}</p>
+                        <p>{routine.notes}</p>
                         <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
                     </>
                 )}
                 <ComboList routineId={routine.id} />
-                <Button variant="contained">Add Combo</Button>
-                <ComboForm game={routine.game} routineId={routine.id} />
+                {isAddingCombo ? (
+                    <ComboForm
+                        onCancel={() => setIsAddingCombo(false)}
+                        game={routine.game}
+                        routineId={routine.id}
+                    />
+                ) : (
+                    <Button onClick={() => setIsAddingCombo(true)} variant="contained">
+                        Add Combo
+                    </Button>
+                )}
             </>
         );
     }

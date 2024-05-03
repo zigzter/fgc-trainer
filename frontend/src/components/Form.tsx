@@ -8,7 +8,7 @@ interface Props {
 
 export default function Form({ children, onSubmit }: Props) {
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} style={{ marginTop: 18 }}>
             <Stack spacing={2}>{children}</Stack>
         </form>
     );
