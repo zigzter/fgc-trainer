@@ -36,7 +36,6 @@ export const upsertCombo =
     (method: "PUT" | "POST", id?: string) =>
     async (data: ComboFormData): Promise<ComboResponse> => {
         const jwt = await getJWT();
-        console.log(data);
         const res = await fetch(method === "PUT" ? `${COMBOS_URL}/${id}` : COMBOS_URL, {
             method: method,
             headers: {

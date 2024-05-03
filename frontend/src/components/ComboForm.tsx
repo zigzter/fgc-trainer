@@ -1,11 +1,10 @@
-import { Autocomplete, Button, Chip, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import { LoadingButton } from "@mui/lab";
 import { Controller, useForm } from "react-hook-form";
 import { smashUltimate } from "../data/smash_ultimate";
 import games from "../data/games";
-import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { ComboFormData, upsertCombo } from "../api/combos";
-import { LoadingButton } from "@mui/lab";
 
 interface Props {
     game: (typeof games)[number];
@@ -25,19 +24,10 @@ const inputs = {
 
 export default function ComboForm({ game, routineId, onCancel }: Props) {
     const { register, handleSubmit, control } = useForm<ComboFormData>();
-    const [currentCombo, setCurrentCombo] = useState<string[]>([]);
 
     const mutation = useMutation({
         mutationFn: upsertCombo("POST", routineId),
     });
-
-    const updateCombos = (val: string) => {
-        setCurrentCombo((prev) => [...prev, val]);
-    };
-
-    const deleteInput = (targetIndex: number) => {
-        setCurrentCombo((prev) => prev.filter((_, index) => index !== targetIndex));
-    };
 
     const onSubmit = (data: ComboFormData) => {
         mutation.mutate(data);
@@ -47,20 +37,20 @@ export default function ComboForm({ game, routineId, onCancel }: Props) {
         <form onSubmit={handleSubmit(onSubmit)}>
             <TextField label="Name" {...register("name")} />
             <TextField label="Notes" {...register("notes")} />
-            {currentCombo.map((combo, index) => (
-                <Chip key={index} label={combo} onDelete={() => deleteInput(index)} />
-            ))}
             <Controller
-                name="input"
+                name="inputs"
                 control={control}
                 render={({ field: { onChange, value } }) => (
                     <Autocomplete
-                        id="input"
+                        id="inputs"
+                        multiple
+                        freeSolo
+                        autoComplete
+                        isOptionEqualToValue={() => false}
                         options={inputs[game]}
                         value={value}
                         onChange={(_, newValue) => {
                             onChange(newValue);
-                            updateCombos(newValue);
                         }}
                         renderInput={(params) => <TextField {...params} label="Input" />}
                     />
