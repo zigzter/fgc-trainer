@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteCombo, getCombos } from "../api/combos";
+import { ComboResponse, deleteCombo, getCombos } from "../api/combos";
 import {
     Card,
     CardActions,
@@ -13,9 +13,10 @@ import PopupMenu from "./PopupMenu";
 
 interface Props {
     routineId: string;
+    onEdit: (id: ComboResponse) => void;
 }
 
-export default function ComboList({ routineId }: Props) {
+export default function ComboList({ routineId, onEdit }: Props) {
     const queryClient = useQueryClient();
     const {
         data: combos,
@@ -59,7 +60,10 @@ export default function ComboList({ routineId }: Props) {
                 </Stack>
             </CardContent>
             <CardActions>
-                <PopupMenu onDelete={() => mutation.mutate(combo.id)} onEdit={() => null} />
+                <PopupMenu
+                    onDelete={() => mutation.mutate(combo.id)}
+                    onEdit={() => onEdit(combo)}
+                />
             </CardActions>
         </Card>
     ));

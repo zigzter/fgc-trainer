@@ -4,7 +4,7 @@ import { LoadingButton } from "@mui/lab";
 import { Controller, useForm } from "react-hook-form";
 import { smashUltimate } from "../data/smash_ultimate";
 import games from "../data/games";
-import { ComboFormData, upsertCombo } from "../api/combos";
+import { ComboFormData, ComboResponse, upsertCombo } from "../api/combos";
 
 interface PostProps {
     method: "POST";
@@ -12,8 +12,7 @@ interface PostProps {
 
 interface PutProps {
     method: "PUT";
-    initialData: ComboFormData;
-    comboId: string;
+    initialData: ComboResponse;
 }
 
 type Props = {
@@ -41,7 +40,11 @@ export default function ComboForm(props: Props) {
     } = useForm<ComboFormData>({ defaultValues: method === "PUT" ? props.initialData : undefined });
 
     const mutation = useMutation({
-        mutationFn: upsertCombo(method, routineId, method === "PUT" ? props.comboId : undefined),
+        mutationFn: upsertCombo(
+            method,
+            routineId,
+            method === "PUT" ? props.initialData.id : undefined,
+        ),
     });
 
     const onSubmit = (data: ComboFormData) => {

@@ -6,10 +6,12 @@ import RoutineForm from "../components/RoutineForm";
 import { routineQuery } from "../utils/loaders";
 import ComboForm from "../components/ComboForm";
 import ComboList from "../components/ComboList";
+import { ComboResponse } from "../api/combos";
 
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
     const [isAddingCombo, setIsAddingCombo] = useState(false);
+    const [editingCombo, setEditingCombo] = useState<ComboResponse | null>(null);
     const params = useParams();
     const location = useLocation();
 
@@ -52,12 +54,14 @@ export default function Routine() {
                     </>
                 )}
                 <Divider sx={{ my: 2 }} />
-                <ComboList routineId={routine.id} />
-                {isAddingCombo ? (
+                <ComboList routineId={routine.id} onEdit={(combo) => setEditingCombo(combo)} />
+                {isAddingCombo || editingCombo ? (
                     <ComboForm
                         onCancel={() => setIsAddingCombo(false)}
                         game={routine.game}
                         routineId={routine.id}
+                        method="POST"
+                        {...(editingCombo && { method: "PUT", initialData: editingCombo })}
                     />
                 ) : (
                     <Button onClick={() => setIsAddingCombo(true)} variant="contained">
