@@ -35,11 +35,10 @@ export const getCombos = async (id: string): Promise<ComboResponse[]> => {
 };
 
 export const upsertCombo =
-    (method: "PUT" | "POST", id?: string) =>
+    (method: "PUT" | "POST", routineId: string, comboId?: string) =>
     async (data: ComboFormData): Promise<ComboResponse> => {
         const jwt = await getJWT();
-        console.log(data);
-        const res = await fetch(method === "PUT" ? `${COMBOS_URL}/${id}` : COMBOS_URL, {
+        const res = await fetch(method === "PUT" ? `${COMBOS_URL}/${comboId}` : COMBOS_URL, {
             method: method,
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +48,7 @@ export const upsertCombo =
             body: JSON.stringify({
                 combo: {
                     ...data,
-                    routine_id: id,
+                    routine_id: routineId,
                 },
             }),
         });

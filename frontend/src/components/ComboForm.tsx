@@ -6,12 +6,21 @@ import { smashUltimate } from "../data/smash_ultimate";
 import games from "../data/games";
 import { ComboFormData, upsertCombo } from "../api/combos";
 
-interface Props {
+interface PostProps {
+    method: "POST";
+}
+
+interface PutProps {
+    method: "PUT";
+    initialData: ComboFormData;
+    comboId: string;
+}
+
+type Props = {
     game: (typeof games)[number];
     onCancel: () => void;
-    initialData?: ComboFormData;
-    routineId?: string;
-}
+    routineId: string;
+} & (PostProps | PutProps);
 
 const inputs = {
     "Smash Ultimate": [
@@ -22,16 +31,17 @@ const inputs = {
     "Streetfighter 6": [],
 } as const;
 
-export default function ComboForm({ game, routineId, onCancel }: Props) {
+export default function ComboForm(props: Props) {
+    const { game, routineId, onCancel, method } = props;
     const {
         register,
         handleSubmit,
         control,
         formState: { errors },
-    } = useForm<ComboFormData>();
+    } = useForm<ComboFormData>({ defaultValues: method === "PUT" ? props.initialData : undefined });
 
     const mutation = useMutation({
-        mutationFn: upsertCombo("POST", routineId),
+        mutationFn: upsertCombo(method, routineId, method === "PUT" ? props.comboId : undefined),
     });
 
     const onSubmit = (data: ComboFormData) => {

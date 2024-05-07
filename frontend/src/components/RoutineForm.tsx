@@ -6,24 +6,34 @@ import Form from "./Form";
 import games from "../data/games";
 import { RoutineFormData, upsertRoutine } from "../api/routines";
 
-interface Props {
-    onCancel: () => void;
-    method: "POST" | "PUT";
-    initialData?: RoutineFormData;
-    routineId?: string;
+interface PostProps {
+    method: "POST";
 }
 
-export default function RoutineForm({ onCancel, method, initialData, routineId }: Props) {
+interface PutProps {
+    method: "PUT";
+    initialData: RoutineFormData;
+    routineId: string;
+}
+
+type Props = {
+    onCancel: () => void;
+} & (PostProps | PutProps);
+
+export default function RoutineForm(props: Props) {
+    const { onCancel, method } = props;
     const { register, handleSubmit, control } = useForm<RoutineFormData>({
-        defaultValues: initialData,
+        defaultValues: method === "PUT" ? props.initialData : undefined,
     });
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-        mutationFn: upsertRoutine(method, routineId),
+        mutationFn: upsertRoutine(method, method === "PUT" ? props.routineId : undefined),
         mutationKey: ["routines"],
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["routines", routineId] });
+            queryClient.invalidateQueries({
+                queryKey: ["routines", method === "PUT" ? props.routineId : undefined],
+            });
         },
     });
 

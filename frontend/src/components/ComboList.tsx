@@ -52,10 +52,10 @@ export default function ComboList({ routineId }: Props) {
                 <Typography variant="h6">{combo.name}</Typography>
                 {combo.notes && <Typography>Notes: {combo.notes}</Typography>}
                 <Stack direction="row" spacing={1}>
-                    {combo.reps}
                     {combo.inputs.map((input, i) => (
                         <Chip key={`${input}-${i}`} label={input} color="primary" />
                     ))}
+                    <Typography>x{combo.reps}</Typography>
                 </Stack>
             </CardContent>
             <CardActions>
