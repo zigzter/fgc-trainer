@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { LoadingButton } from "@mui/lab";
 import { Controller, useForm } from "react-hook-form";
 import { smashUltimate } from "../data/smash_ultimate";
-import games from "../data/games";
 import { ComboFormData, ComboResponse, upsertCombo } from "../api/combos";
+import { GameName } from "../types/content";
 
 interface PostProps {
     method: "POST";
@@ -16,7 +16,7 @@ interface PutProps {
 }
 
 type Props = {
-    game: (typeof games)[number];
+    game: GameName;
     onCancel: () => void;
     routineId: string;
 } & (PostProps | PutProps);

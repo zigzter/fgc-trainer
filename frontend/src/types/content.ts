@@ -1,3 +1,5 @@
+import games from "../data/games";
+
 export interface Character {
     id: string;
     name: string;
@@ -11,3 +13,5 @@ export interface Game {
     moves: Record<string, string>;
     modifiers: Record<string, string>;
 }
+
+export type GameName = (typeof games)[number];

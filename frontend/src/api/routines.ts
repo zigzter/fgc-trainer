@@ -1,10 +1,11 @@
 import { ROUTINES_URL } from "../config";
+import { GameName } from "../types/content";
 import { getJWT } from "../utils/user";
 
 export interface RoutineResponse {
     id: string;
     user_id: string;
-    game: string;
+    game: GameName;
     title: string;
     notes: string;
     combos: string;
