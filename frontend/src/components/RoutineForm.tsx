@@ -18,10 +18,11 @@ interface PutProps {
 
 type Props = {
     onCancel: () => void;
+    onSuccess: () => void;
 } & (PostProps | PutProps);
 
 export default function RoutineForm(props: Props) {
-    const { onCancel, method } = props;
+    const { onCancel, method, onSuccess } = props;
     const { register, handleSubmit, control } = useForm<RoutineFormData>({
         defaultValues: method === "PUT" ? props.initialData : undefined,
     });
@@ -31,9 +32,8 @@ export default function RoutineForm(props: Props) {
         mutationFn: upsertRoutine(method, method === "PUT" ? props.routineId : undefined),
         mutationKey: ["routines"],
         onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["routines", method === "PUT" ? props.routineId : undefined],
-            });
+            onSuccess();
+            queryClient.invalidateQueries({ queryKey: ["routines"] });
         },
     });
 

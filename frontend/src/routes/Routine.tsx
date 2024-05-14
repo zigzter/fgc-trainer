@@ -39,6 +39,7 @@ export default function Routine() {
                 {isEditing ? (
                     <RoutineForm
                         onCancel={() => setIsEditing(false)}
+                        onSuccess={() => setIsEditing(false)}
                         method="PUT"
                         initialData={routine}
                         routineId={routine.id}
