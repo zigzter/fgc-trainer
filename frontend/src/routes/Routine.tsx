@@ -56,6 +56,7 @@ export default function Routine() {
                 {isAddingCombo ? (
                     <ComboForm
                         onCancel={() => setIsAddingCombo(false)}
+                        onSuccess={() => setIsAddingCombo(false)}
                         game={routine.game}
                         routineId={routine.id}
                         method="POST"

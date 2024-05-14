@@ -56,6 +56,7 @@ export default function ComboList({ routineId, game }: Props) {
             <ComboForm
                 key={combo.id}
                 onCancel={() => setEditingCombo(null)}
+                onSuccess={() => setEditingCombo(null)}
                 game={game}
                 routineId={routineId}
                 method="PUT"

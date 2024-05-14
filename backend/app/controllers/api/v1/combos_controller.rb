@@ -21,7 +21,7 @@ module Api
       end
 
       def update
-        if @combo.update(routine_params)
+        if @combo.update(combo_params)
           render json: @combo
         else
           render json: @combo.errors, status: :unprocessable_entity
