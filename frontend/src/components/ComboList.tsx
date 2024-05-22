@@ -1,18 +1,12 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-    Card,
-    CardActions,
-    CardContent,
-    Chip,
-    CircularProgress,
-    Stack,
-    Typography,
-} from "@mui/material";
-import { ComboResponse, deleteCombo, getCombos } from "../api/combos";
-import PopupMenu from "./PopupMenu";
+import { useQuery } from "@tanstack/react-query";
+import { CircularProgress } from "@mui/material";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { ComboResponse, getCombos } from "../api/combos";
 import ComboForm from "./ComboForm";
 import { GameName } from "../types/content";
+import { DndContext } from "@dnd-kit/core";
+import Combo from "./Combo";
 
 interface Props {
     routineId: string;
@@ -21,7 +15,6 @@ interface Props {
 
 export default function ComboList({ routineId, game }: Props) {
     const [editingCombo, setEditingCombo] = useState<ComboResponse | null>(null);
-    const queryClient = useQueryClient();
     const {
         data: combos,
         isPending,
@@ -30,13 +23,6 @@ export default function ComboList({ routineId, game }: Props) {
     } = useQuery({
         queryKey: ["combos"],
         queryFn: () => getCombos(routineId),
-    });
-
-    const mutation = useMutation({
-        mutationFn: (id: string) => deleteCombo(id),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["combos"] });
-        },
     });
 
     if (isPending) {
@@ -51,36 +37,25 @@ export default function ComboList({ routineId, game }: Props) {
         return <p>{error.message}</p>;
     }
 
-    return combos.map((combo) =>
-        editingCombo?.id === combo.id ? (
-            <ComboForm
-                key={combo.id}
-                onCancel={() => setEditingCombo(null)}
-                onSuccess={() => setEditingCombo(null)}
-                game={game}
-                routineId={routineId}
-                method="PUT"
-                initialData={editingCombo}
-            />
-        ) : (
-            <Card key={combo.id} sx={{ display: "flex", my: 2 }}>
-                <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6">{combo.name}</Typography>
-                    {combo.notes && <Typography>Notes: {combo.notes}</Typography>}
-                    <Stack direction="row" spacing={1}>
-                        {combo.inputs.map((input, i) => (
-                            <Chip key={`${input}-${i}`} label={input} color="primary" />
-                        ))}
-                        <Typography>x{combo.reps}</Typography>
-                    </Stack>
-                </CardContent>
-                <CardActions>
-                    <PopupMenu
-                        onDelete={() => mutation.mutate(combo.id)}
-                        onEdit={() => setEditingCombo(combo)}
-                    />
-                </CardActions>
-            </Card>
-        ),
+    return (
+        <DndContext>
+            <SortableContext items={combos} strategy={verticalListSortingStrategy}>
+                {combos.map((combo) =>
+                    editingCombo?.id === combo.id ? (
+                        <ComboForm
+                            key={combo.id}
+                            onCancel={() => setEditingCombo(null)}
+                            onSuccess={() => setEditingCombo(null)}
+                            game={game}
+                            routineId={routineId}
+                            method="PUT"
+                            initialData={editingCombo}
+                        />
+                    ) : (
+                        <Combo combo={combo} onEdit={() => setEditingCombo(combo)} />
+                    ),
+                )}
+            </SortableContext>
+        </DndContext>
     );
 }
