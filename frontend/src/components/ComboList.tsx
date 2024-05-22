@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { ComboResponse, getCombos } from "../api/combos";
+import { ComboResponse, getCombos, updateCombo } from "../api/combos";
 import ComboForm from "./ComboForm";
 import { GameName } from "../types/content";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Combo from "./Combo";
 
 interface Props {
@@ -25,6 +25,21 @@ export default function ComboList({ routineId, game }: Props) {
         queryFn: () => getCombos(routineId),
     });
 
+    const mutation = useMutation({
+        mutationFn: updateCombo,
+    });
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (over && active.id !== over.id && combos) {
+            const currCombo = combos.find((combo) => combo.id === active.id);
+            const beforeCombo = combos.find((combo) => combo.id === over.id);
+            if (currCombo) {
+                mutation.mutate({ ...currCombo, before: beforeCombo });
+            }
+        }
+    };
+
     if (isPending) {
         return (
             <div>
@@ -38,7 +53,7 @@ export default function ComboList({ routineId, game }: Props) {
     }
 
     return (
-        <DndContext>
+        <DndContext onDragEnd={handleDragEnd}>
             <SortableContext items={combos} strategy={verticalListSortingStrategy}>
                 {combos.map((combo) =>
                     editingCombo?.id === combo.id ? (

@@ -1,6 +1,7 @@
 import { COMBOS_URL } from "../config";
 import { getJWT } from "../utils/user";
 
+// TODO: Split this into a response and existing Combo type
 export interface ComboResponse {
     id: string;
     inputs: string[];
@@ -10,14 +11,15 @@ export interface ComboResponse {
     routine_id: string;
     created_at: string;
     updated_at: string;
+    before?: ComboResponse;
 }
 
 export interface ComboFormData {
-    game: string;
     name: string;
     notes: string;
     reps: number;
     inputs: string[];
+    before?: ComboResponse;
 }
 
 export const getCombos = async (id: string): Promise<ComboResponse[]> => {
@@ -34,29 +36,49 @@ export const getCombos = async (id: string): Promise<ComboResponse[]> => {
     return res.json();
 };
 
-export const upsertCombo =
-    (method: "PUT" | "POST", routineId: string, comboId?: string) =>
-    async (data: ComboFormData): Promise<ComboResponse> => {
-        const jwt = await getJWT();
-        const res = await fetch(method === "PUT" ? `${COMBOS_URL}/${comboId}` : COMBOS_URL, {
-            method: method,
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                Authorization: `Bearer ${jwt?.string || ""}`,
+export const createCombo = async (
+    data: ComboFormData,
+    routineId: string,
+): Promise<ComboResponse> => {
+    const jwt = await getJWT();
+    const res = await fetch(COMBOS_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+        body: JSON.stringify({
+            combo: {
+                ...data,
+                routine_id: routineId,
             },
-            body: JSON.stringify({
-                combo: {
-                    ...data,
-                    routine_id: routineId,
-                },
-            }),
-        });
-        if (!res.ok) {
-            throw new Error(res.statusText);
-        }
-        return res.json();
-    };
+        }),
+    });
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+    return res.json();
+};
+
+export const updateCombo = async (data: ComboResponse): Promise<ComboResponse> => {
+    const jwt = await getJWT();
+    const res = await fetch(`${COMBOS_URL}/${data.id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+        body: JSON.stringify({
+            combo: data,
+        }),
+    });
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+    return res.json();
+};
 
 export const deleteCombo = async (id: string): Promise<void> => {
     const jwt = await getJWT();

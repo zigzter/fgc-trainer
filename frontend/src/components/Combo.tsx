@@ -1,8 +1,10 @@
 import { Card, CardActions, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
-import PopupMenu from "./PopupMenu";
 import { DragHandle } from "@mui/icons-material";
+import { useSortable } from "@dnd-kit/sortable";
+import PopupMenu from "./PopupMenu";
 import { ComboResponse, deleteCombo } from "../api/combos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
     combo: ComboResponse;
@@ -10,6 +12,9 @@ interface Props {
 }
 
 export default function Combo({ combo, onEdit }: Props) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: combo.id,
+    });
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: () => deleteCombo(combo.id),
@@ -19,7 +24,14 @@ export default function Combo({ combo, onEdit }: Props) {
     });
 
     return (
-        <Card key={combo.id} sx={{ display: "flex", my: 2 }}>
+        <Card
+            key={combo.id}
+            sx={{ display: "flex", my: 2 }}
+            ref={setNodeRef}
+            style={{ transition, transform: CSS.Transform.toString(transform) }}
+            {...attributes}
+            {...listeners}
+        >
             <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6">{combo.name}</Typography>
                 {combo.notes && <Typography>Notes: {combo.notes}</Typography>}

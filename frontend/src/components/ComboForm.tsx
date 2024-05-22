@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoadingButton } from "@mui/lab";
 import { Controller, useForm } from "react-hook-form";
 import { smashUltimate } from "../data/smash_ultimate";
-import { ComboFormData, ComboResponse, upsertCombo } from "../api/combos";
+import { ComboFormData, ComboResponse, createCombo, updateCombo } from "../api/combos";
 import { GameName } from "../types/content";
 
 interface PostProps {
@@ -42,18 +42,16 @@ export default function ComboForm(props: Props) {
     } = useForm<ComboFormData>({ defaultValues: method === "PUT" ? props.initialData : undefined });
 
     const mutation = useMutation({
-        mutationFn: upsertCombo(
-            method,
-            routineId,
-            method === "PUT" ? props.initialData.id : undefined,
-        ),
+        mutationFn: (data: ComboFormData | ComboResponse) =>
+            // TODO: Fix types
+            method === "PUT" ? updateCombo(data as ComboResponse) : createCombo(data, routineId),
         onSuccess: () => {
             onSuccess();
             queryClient.invalidateQueries({ queryKey: ["combos"] });
         },
     });
 
-    const onSubmit = (data: ComboFormData) => {
+    const onSubmit = (data: ComboFormData | ComboResponse) => {
         mutation.mutate(data);
     };
 
