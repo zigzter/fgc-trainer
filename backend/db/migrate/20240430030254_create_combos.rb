@@ -6,6 +6,7 @@ class CreateCombos < ActiveRecord::Migration[7.1]
       t.text :inputs, array: true, default: []
       t.text :notes
       t.integer :reps
+      t.integer :position, null: false
 
       t.string :routine_id, null: false
 
@@ -14,5 +15,6 @@ class CreateCombos < ActiveRecord::Migration[7.1]
 
     add_foreign_key :combos, :routines, column: :routine_id
     add_index :combos, :routine_id
+    add_index :combos, [:routine_id, :position], unique: true
   end
 end

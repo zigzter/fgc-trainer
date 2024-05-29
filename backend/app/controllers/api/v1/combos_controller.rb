@@ -47,7 +47,7 @@ module Api
       end
 
       def combo_params
-        params.require(:combo).permit(:name, { inputs: [] }, :notes, :routine_id, :reps)
+        params.require(:combo).permit(:name, { inputs: [] }, :notes, :routine_id, :reps, :before)
       end
     end
   end

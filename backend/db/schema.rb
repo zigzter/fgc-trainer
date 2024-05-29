@@ -19,9 +19,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_30_030254) do
     t.text "inputs", default: [], array: true
     t.text "notes"
     t.integer "reps"
+    t.integer "position", null: false
     t.string "routine_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["routine_id", "position"], name: "index_combos_on_routine_id_and_position", unique: true
     t.index ["routine_id"], name: "index_combos_on_routine_id"
   end
 
