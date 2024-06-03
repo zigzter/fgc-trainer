@@ -1,5 +1,4 @@
 class Combo < ApplicationRecord
-  positioned
   belongs_to :routine
   positioned on: :routine
   before_create :assign_id
