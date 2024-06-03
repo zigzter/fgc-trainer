@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { ComboResponse, getCombos, updateCombo } from "../api/combos";
 import ComboForm from "./ComboForm";
 import { GameName } from "../types/content";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Combo from "./Combo";
 
 interface Props {
@@ -28,6 +28,25 @@ export default function ComboList({ routineId, game }: Props) {
 
     const mutation = useMutation({
         mutationFn: updateCombo,
+        onMutate: (dragged) => {
+            queryClient.invalidateQueries({ queryKey: ["combos"] });
+            const previousCombos = queryClient.getQueryData<ComboResponse[]>(["combos"]);
+
+            if (previousCombos) {
+                const draggedIndex = previousCombos.findIndex((combo) => combo.id === dragged.id);
+                const beforeIndex = dragged.before?.id
+                    ? previousCombos.findIndex((combo) => combo.id === dragged.before?.id)
+                    : previousCombos.length;
+                const newOrder = [...previousCombos];
+                const [draggedCombo] = newOrder.splice(draggedIndex, 1);
+                newOrder.splice(beforeIndex, 0, draggedCombo);
+                queryClient.setQueryData(["combos"], newOrder);
+            }
+            return previousCombos;
+        },
+        onError: (_, __, context) => {
+            queryClient.setQueryData(["combos", routineId], context);
+        },
         onSettled: () => {
             return queryClient.invalidateQueries({ queryKey: ["combos"] });
         },
