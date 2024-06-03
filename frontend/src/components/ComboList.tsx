@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { ComboResponse, getCombos, updateCombo } from "../api/combos";
@@ -14,6 +14,7 @@ interface Props {
 }
 
 export default function ComboList({ routineId, game }: Props) {
+    const queryClient = useQueryClient();
     const [editingCombo, setEditingCombo] = useState<ComboResponse | null>(null);
     const {
         data: combos,
@@ -27,6 +28,9 @@ export default function ComboList({ routineId, game }: Props) {
 
     const mutation = useMutation({
         mutationFn: updateCombo,
+        onSettled: () => {
+            return queryClient.invalidateQueries({ queryKey: ["combos"] });
+        },
     });
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -67,7 +71,11 @@ export default function ComboList({ routineId, game }: Props) {
                             initialData={editingCombo}
                         />
                     ) : (
-                        <Combo combo={combo} onEdit={() => setEditingCombo(combo)} />
+                        <Combo
+                            isDragged={mutation.isPending && mutation.variables?.id === combo.id}
+                            combo={combo}
+                            onEdit={() => setEditingCombo(combo)}
+                        />
                     ),
                 )}
             </SortableContext>

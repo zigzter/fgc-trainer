@@ -1,4 +1,13 @@
-import { Card, CardActions, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Chip,
+    CircularProgress,
+    IconButton,
+    Stack,
+    Typography,
+} from "@mui/material";
 import { DragHandle } from "@mui/icons-material";
 import { useSortable } from "@dnd-kit/sortable";
 import PopupMenu from "./PopupMenu";
@@ -9,9 +18,10 @@ import { CSS } from "@dnd-kit/utilities";
 interface Props {
     combo: ComboResponse;
     onEdit: () => void;
+    isDragged: boolean;
 }
 
-export default function Combo({ combo, onEdit }: Props) {
+export default function Combo({ combo, onEdit, isDragged }: Props) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
         id: combo.id,
     });
@@ -43,9 +53,13 @@ export default function Combo({ combo, onEdit }: Props) {
                 </Stack>
             </CardContent>
             <CardActions sx={{ flexDirection: "column", justifyContent: "center" }}>
-                <IconButton sx={{ cursor: "grab" }}>
-                    <DragHandle />
-                </IconButton>
+                {isDragged ? (
+                    <CircularProgress size={20} />
+                ) : (
+                    <IconButton sx={{ cursor: "grab" }}>
+                        <DragHandle />
+                    </IconButton>
+                )}
                 <PopupMenu onDelete={mutation.mutate} onEdit={onEdit} />
             </CardActions>
         </Card>
