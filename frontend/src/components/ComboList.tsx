@@ -29,13 +29,13 @@ export default function ComboList({ routineId, game }: Props) {
     const mutation = useMutation({
         mutationFn: updateCombo,
         onMutate: (dragged) => {
-            queryClient.invalidateQueries({ queryKey: ["combos"] });
+            queryClient.cancelQueries({ queryKey: ["combos"] });
             const previousCombos = queryClient.getQueryData<ComboResponse[]>(["combos"]);
 
             if (previousCombos) {
                 const draggedIndex = previousCombos.findIndex((combo) => combo.id === dragged.id);
-                const beforeIndex = dragged.before?.id
-                    ? previousCombos.findIndex((combo) => combo.id === dragged.before?.id)
+                const beforeIndex = dragged.before
+                    ? previousCombos.findIndex((combo) => combo.id === dragged.before)
                     : previousCombos.length;
                 const newOrder = [...previousCombos];
                 const [draggedCombo] = newOrder.splice(draggedIndex, 1);
@@ -55,10 +55,11 @@ export default function ComboList({ routineId, game }: Props) {
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (over && active.id !== over.id && combos) {
+            // TODO: fix one way reordering
             const currCombo = combos.find((combo) => combo.id === active.id);
             const beforeCombo = combos.find((combo) => combo.id === over.id);
             if (currCombo) {
-                mutation.mutate({ ...currCombo, before: beforeCombo });
+                mutation.mutate({ ...currCombo, before: beforeCombo?.id });
             }
         }
     };
@@ -90,11 +91,7 @@ export default function ComboList({ routineId, game }: Props) {
                             initialData={editingCombo}
                         />
                     ) : (
-                        <Combo
-                            isDragged={mutation.isPending && mutation.variables?.id === combo.id}
-                            combo={combo}
-                            onEdit={() => setEditingCombo(combo)}
-                        />
+                        <Combo key={combo.id} combo={combo} onEdit={() => setEditingCombo(combo)} />
                     ),
                 )}
             </SortableContext>

@@ -21,7 +21,7 @@ module Api
       end
 
       def update
-        if @combo.update(combo_params)
+        if @combo.update(position: { before: combo_params[:before] })
           render json: @combo
         else
           render json: @combo.errors, status: :unprocessable_entity
@@ -47,7 +47,22 @@ module Api
       end
 
       def combo_params
-        params.require(:combo).permit(:name, { inputs: [] }, :notes, :routine_id, :reps, :before)
+        params.require(:combo).permit(
+          :id,
+          :name,
+          :notes,
+          :reps,
+          :position,
+          :routine_id,
+          :created_at,
+          :updated_at,
+          :before,
+          inputs: []
+        )
+      end
+
+      def reorder_params
+        params.require(:combo).permit(before: [:id])
       end
     end
   end

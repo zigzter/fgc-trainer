@@ -12,7 +12,7 @@ module Api
       end
 
       def create
-        @routine = Routine.new(routine_params.merge(user_id: @current_user[:id]))
+        @routine = Routine.new(routine_params.merge(user_id: @current_user[:id], combos: '[]'))
         if @routine.save
           render json: @routine, status: :created
         else
@@ -50,7 +50,7 @@ module Api
       end
 
       def routine_params
-        params.require(:routine).permit(:game, :title, :notes)
+        params.require(:routine).permit(:game, :title, :notes, :combos)
       end
 
       def not_destroyed

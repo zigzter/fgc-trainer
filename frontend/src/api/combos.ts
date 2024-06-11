@@ -11,7 +11,7 @@ export interface ComboResponse {
     routine_id: string;
     created_at: string;
     updated_at: string;
-    before?: ComboResponse;
+    before?: string;
 }
 
 export interface ComboFormData {
@@ -19,7 +19,7 @@ export interface ComboFormData {
     notes: string;
     reps: number;
     inputs: string[];
-    before?: ComboResponse;
+    before?: string;
 }
 
 export const getCombos = async (id: string): Promise<ComboResponse[]> => {
