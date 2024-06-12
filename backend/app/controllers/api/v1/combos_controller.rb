@@ -7,7 +7,7 @@ module Api
       rescue_from ActiveRecord::RecordNotDestroyed, with: :not_destroyed
 
       def index
-        @combos = Combo.where(routine_id: params[:routine_id])
+        @combos = Combo.where(routine_id: params[:routine_id]).order(:position)
         render json: @combos
       end
 
@@ -21,7 +21,8 @@ module Api
       end
 
       def update
-        if @combo.update(position: { before: combo_params[:before] })
+        relative_position = combo_params[:direction]
+        if @combo.update(position: { relative_position => combo_params[:target] })
           render json: @combo
         else
           render json: @combo.errors, status: :unprocessable_entity
@@ -56,7 +57,8 @@ module Api
           :routine_id,
           :created_at,
           :updated_at,
-          :before,
+          :target,
+          :direction,
           inputs: []
         )
       end

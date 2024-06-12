@@ -7,11 +7,12 @@ export interface ComboResponse {
     inputs: string[];
     name: string;
     notes: string;
+    position: number;
     reps: number;
     routine_id: string;
     created_at: string;
     updated_at: string;
-    before?: string;
+    dropTargetId?: string;
 }
 
 export interface ComboFormData {
@@ -19,7 +20,7 @@ export interface ComboFormData {
     notes: string;
     reps: number;
     inputs: string[];
-    before?: string;
+    dropTargetId?: string;
 }
 
 export const getCombos = async (id: string): Promise<ComboResponse[]> => {
@@ -61,7 +62,9 @@ export const createCombo = async (
     return res.json();
 };
 
-export const updateCombo = async (data: ComboResponse): Promise<ComboResponse> => {
+export const updateCombo = async (
+    data: { target?: string; direction: "before" | "after" } & ComboResponse,
+): Promise<ComboResponse> => {
     const jwt = await getJWT();
     const res = await fetch(`${COMBOS_URL}/${data.id}`, {
         method: "PUT",

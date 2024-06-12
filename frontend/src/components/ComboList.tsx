@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { ComboResponse, getCombos, updateCombo } from "../api/combos";
 import ComboForm from "./ComboForm";
@@ -33,13 +33,9 @@ export default function ComboList({ routineId, game }: Props) {
             const previousCombos = queryClient.getQueryData<ComboResponse[]>(["combos"]);
 
             if (previousCombos) {
-                const draggedIndex = previousCombos.findIndex((combo) => combo.id === dragged.id);
-                const beforeIndex = dragged.before
-                    ? previousCombos.findIndex((combo) => combo.id === dragged.before)
-                    : previousCombos.length;
-                const newOrder = [...previousCombos];
-                const [draggedCombo] = newOrder.splice(draggedIndex, 1);
-                newOrder.splice(beforeIndex, 0, draggedCombo);
+                const oldIndex = previousCombos.findIndex((combo) => combo.id === dragged.id);
+                const newIndex = previousCombos.findIndex((combo) => combo.id === dragged.target);
+                const newOrder = arrayMove(previousCombos, oldIndex, newIndex);
                 queryClient.setQueryData(["combos"], newOrder);
             }
             return previousCombos;
@@ -55,11 +51,14 @@ export default function ComboList({ routineId, game }: Props) {
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
         if (over && active.id !== over.id && combos) {
-            // TODO: fix one way reordering
             const currCombo = combos.find((combo) => combo.id === active.id);
             const beforeCombo = combos.find((combo) => combo.id === over.id);
             if (currCombo) {
-                mutation.mutate({ ...currCombo, before: beforeCombo?.id });
+                let direction: "before" | "after" = "after";
+                if (beforeCombo) {
+                    direction = currCombo.position > beforeCombo?.position ? "before" : "after";
+                }
+                mutation.mutate({ ...currCombo, target: beforeCombo?.id, direction });
             }
         }
     };
