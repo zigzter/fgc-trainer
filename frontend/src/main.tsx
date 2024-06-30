@@ -17,6 +17,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import VerifyEmail from "./routes/VerifyEmail.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
                 element: <Routine />,
                 errorElement: <RoutineError />,
                 loader: routineLoader(queryClient),
+            },
+            {
+                path: "verify",
+                element: <VerifyEmail />,
             },
             {
                 path: "history",

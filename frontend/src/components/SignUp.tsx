@@ -40,8 +40,17 @@ export default function SignUp({ index, value }: Props) {
     const onSubmit = async (data: FormData) => {
         try {
             setIsLoading(true);
-            await signUp(data);
-            navigate("/");
+            await signUp({
+                username: data.username,
+                password: data.password,
+                options: {
+                    userAttributes: {
+                        email: data.email,
+                        preferred_username: data.username,
+                    },
+                },
+            });
+            navigate(`/verify?username=${data.username}`);
         } catch (e) {
             setIsLoading(false);
             console.error(e);
