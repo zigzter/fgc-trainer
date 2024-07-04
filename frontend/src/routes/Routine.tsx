@@ -49,7 +49,9 @@ export default function Routine() {
                         <h1>{routine.title}</h1>
                         <p>{routine.game}</p>
                         <p>{routine.notes}</p>
-                        <Button onClick={() => setIsEditing(true)}>Edit Routine</Button>
+                        <Button variant="outlined" onClick={() => setIsEditing(true)}>
+                            Edit Routine
+                        </Button>
                     </>
                 )}
                 <Divider sx={{ my: 2 }} />

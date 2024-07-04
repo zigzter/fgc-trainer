@@ -23,7 +23,9 @@ export default function Routines() {
                     method="POST"
                 />
             ) : (
-                <Button onClick={() => setIsCreating(true)}>New Routine</Button>
+                <Button variant="contained" onClick={() => setIsCreating(true)}>
+                    New Routine
+                </Button>
             )}
             <RoutinesList />
         </>
