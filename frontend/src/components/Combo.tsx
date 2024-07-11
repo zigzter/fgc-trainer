@@ -29,8 +29,6 @@ export default function Combo({ combo, onEdit }: Props) {
             sx={{ display: "flex", my: 2 }}
             ref={setNodeRef}
             style={{ transition, transform: CSS.Transform.toString(transform) }}
-            {...attributes}
-            {...listeners}
         >
             <CardContent sx={{ flexGrow: 1 }}>
                 <Typography variant="h6">{combo.name}</Typography>
@@ -43,7 +41,7 @@ export default function Combo({ combo, onEdit }: Props) {
                 </Stack>
             </CardContent>
             <CardActions sx={{ flexDirection: "column", justifyContent: "center" }}>
-                <IconButton sx={{ cursor: "grab" }}>
+                <IconButton sx={{ cursor: "grab" }} {...attributes} {...listeners}>
                     <DragHandle />
                 </IconButton>
                 <PopupMenu onDelete={mutation.mutate} onEdit={onEdit} />
