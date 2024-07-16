@@ -2,12 +2,12 @@ import { Card, CardActions, CardContent, Chip, IconButton, Stack, Typography } f
 import { DragHandle } from "@mui/icons-material";
 import { useSortable } from "@dnd-kit/sortable";
 import PopupMenu from "./PopupMenu";
-import { ComboResponse, deleteCombo } from "../api/combos";
+import { ExistingCombo, deleteCombo } from "../api/combos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
-    combo: ComboResponse;
+    combo: ExistingCombo;
     onEdit: () => void;
 }
 

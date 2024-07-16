@@ -2,7 +2,7 @@ import { COMBOS_URL } from "../config";
 import { getJWT } from "../utils/user";
 
 // TODO: Split this into a response and existing Combo type
-export interface ComboResponse {
+export interface ExistingCombo {
     id: string;
     inputs: string[];
     name: string;
@@ -23,7 +23,7 @@ export interface ComboFormData {
     dropTargetId?: string;
 }
 
-export const getCombos = async (id: string): Promise<ComboResponse[]> => {
+export const getCombos = async (id: string): Promise<ExistingCombo[]> => {
     const jwt = await getJWT();
     const res = await fetch(COMBOS_URL + `?routine_id=${id}`, {
         headers: {
@@ -40,7 +40,7 @@ export const getCombos = async (id: string): Promise<ComboResponse[]> => {
 export const createCombo = async (
     data: ComboFormData,
     routineId: string,
-): Promise<ComboResponse> => {
+): Promise<ExistingCombo> => {
     const jwt = await getJWT();
     const res = await fetch(COMBOS_URL, {
         method: "POST",
@@ -63,8 +63,8 @@ export const createCombo = async (
 };
 
 export const updateCombo = async (
-    data: { target?: string; direction: "before" | "after" } & ComboResponse,
-): Promise<ComboResponse> => {
+    data: { target?: string; direction: "before" | "after" } & ExistingCombo,
+): Promise<ExistingCombo> => {
     const jwt = await getJWT();
     const res = await fetch(`${COMBOS_URL}/${data.id}`, {
         method: "PUT",
