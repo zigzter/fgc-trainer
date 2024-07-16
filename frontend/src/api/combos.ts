@@ -1,7 +1,6 @@
 import { COMBOS_URL } from "../config";
 import { getJWT } from "../utils/user";
 
-// TODO: Split this into a response and existing Combo type
 export interface ExistingCombo {
     id: string;
     inputs: string[];
@@ -12,7 +11,8 @@ export interface ExistingCombo {
     routine_id: string;
     created_at: string;
     updated_at: string;
-    dropTargetId?: string;
+    target?: string;
+    direction?: "before" | "after";
 }
 
 export interface ComboFormData {
@@ -20,8 +20,11 @@ export interface ComboFormData {
     notes: string;
     reps: number;
     inputs: string[];
-    dropTargetId?: string;
 }
+
+export const isComboUpdate = (combo: ComboFormData | ExistingCombo): combo is ExistingCombo => {
+    return !("id" in combo);
+};
 
 export const getCombos = async (id: string): Promise<ExistingCombo[]> => {
     const jwt = await getJWT();
@@ -62,9 +65,7 @@ export const createCombo = async (
     return res.json();
 };
 
-export const updateCombo = async (
-    data: { target?: string; direction: "before" | "after" } & ExistingCombo,
-): Promise<ExistingCombo> => {
+export const updateCombo = async (data: ExistingCombo): Promise<ExistingCombo> => {
     const jwt = await getJWT();
     const res = await fetch(`${COMBOS_URL}/${data.id}`, {
         method: "PUT",
