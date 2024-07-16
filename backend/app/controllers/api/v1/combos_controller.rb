@@ -22,7 +22,13 @@ module Api
 
       def update
         relative_position = combo_params[:direction]
-        if @combo.update(position: { relative_position => combo_params[:target] })
+        target = combo_params[:target]
+        position_params = if relative_position && target
+                            { position: { relative_position => target } }
+                          else
+                            {}
+                          end
+        if @combo.update(combo_params.except(:direction, :target).merge(position_params))
           render json: @combo
         else
           render json: @combo.errors, status: :unprocessable_entity
