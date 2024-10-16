@@ -23,7 +23,7 @@ export interface ComboFormData {
 }
 
 export const isComboUpdate = (combo: ComboFormData | ExistingCombo): combo is ExistingCombo => {
-    return !("id" in combo);
+    return "id" in combo;
 };
 
 export const getCombos = async (id: string): Promise<ExistingCombo[]> => {
