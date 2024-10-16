@@ -6,18 +6,19 @@ import { CssBaseline } from "@mui/material";
 import { Amplify } from "aws-amplify";
 import Root from "./routes/Root.tsx";
 import RootError from "./errors/RootError.tsx";
-import RoutineError from "./errors/RoutineError.tsx";
 import Index from "./routes/index.tsx";
-import Routines from "./routes/Routines.tsx";
-import History from "./routes/History.tsx";
 import Auth from "./routes/Auth.tsx";
-import Routine from "./routes/Routine.tsx";
 import { rootLoader, routineLoader } from "./utils/loaders.ts";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import VerifyEmail from "./routes/VerifyEmail.tsx";
+import PrivateRoutes from "./routes/PrivateRoutes.tsx";
+import Routine from "./routes/Routine.tsx";
+import Routines from "./routes/Routines.tsx";
+import RoutineError from "./errors/RoutineError.tsx";
+import History from "./routes/History.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -39,6 +40,28 @@ Amplify.configure({
 const router = createBrowserRouter([
     {
         path: "/",
+        element: <PrivateRoutes />,
+        errorElement: <RootError />,
+        loader: rootLoader,
+        children: [
+            {
+                path: "routines",
+                element: <Routines />,
+            },
+            {
+                path: "routines/:routineId",
+                element: <Routine />,
+                errorElement: <RoutineError />,
+                loader: routineLoader(queryClient),
+            },
+            {
+                path: "history",
+                element: <History />,
+            },
+        ],
+    },
+    {
+        path: "/",
         element: <Root />,
         errorElement: <RootError />,
         loader: rootLoader,
@@ -52,22 +75,8 @@ const router = createBrowserRouter([
                 element: <Auth />,
             },
             {
-                path: "routines",
-                element: <Routines />,
-            },
-            {
-                path: "routines/:routineId",
-                element: <Routine />,
-                errorElement: <RoutineError />,
-                loader: routineLoader(queryClient),
-            },
-            {
                 path: "verify",
                 element: <VerifyEmail />,
-            },
-            {
-                path: "history",
-                element: <History />,
             },
         ],
     },
