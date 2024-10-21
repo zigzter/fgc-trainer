@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
-import { Alert, Link, TextField } from "@mui/material";
+import { Alert, IconButton, InputAdornment, Link, TextField } from "@mui/material";
 import { AuthError, signIn } from "aws-amplify/auth";
 import Form from "../components/Form";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import { LoadingButton } from "@mui/lab";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type FormData = {
     username: string;
@@ -17,6 +18,11 @@ interface Props {
 }
 
 export default function SignIn({ index, value }: Props) {
+    const [showPassword, setShowPassword] = useState(false);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
     const {
         register,
         handleSubmit,
@@ -64,10 +70,24 @@ export default function SignIn({ index, value }: Props) {
                 <TextField
                     label="Password"
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     {...register("password", { required: "Password is required" })}
                     error={!!errors.password}
                     helperText={errors.password?.message}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
                 />
                 <LoadingButton
                     disabled={shouldDisableButton}
