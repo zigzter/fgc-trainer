@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Alert } from "@mui/material";
+import { TextField, Alert, InputAdornment, IconButton } from "@mui/material";
 import { AuthError, signUp } from "aws-amplify/auth";
 import { useNavigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Form from "../components/Form";
 
 type FormData = {
@@ -18,6 +19,11 @@ interface Props {
 }
 
 export default function SignUp({ index, value }: Props) {
+    const [showPassword, setShowPassword] = useState(false);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
     const {
         register,
         handleSubmit,
@@ -80,8 +86,22 @@ export default function SignUp({ index, value }: Props) {
                 <TextField
                     label="Password"
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     {...register("password", { required: "Password is required" })}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
                     helperText={errors.password?.message}
                 />
                 <LoadingButton
