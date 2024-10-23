@@ -1,6 +1,7 @@
 class CreateRoutineSessions < ActiveRecord::Migration[7.1]
   def change
     create_table :routine_sessions do |t|
+      t.string :id, primary_key: true
       t.references :routine, null: false, foreign_key: true, type: :string
       t.string :user_id, null: false
       t.datetime :started_at

@@ -1,5 +1,3 @@
-require 'securerandom'
-
 class Routine < ApplicationRecord
   has_many :combos, dependent: :destroy
   has_many :routine_sessions
@@ -11,7 +9,7 @@ class Routine < ApplicationRecord
   private
 
   def assign_id
-    self.id = SecureRandom.alphanumeric(8)
-    self.id = SecureRandom.alphanumeric(8) while Routine.exists?(id:)
+    self.id = generate_id
+    self.id = generate_id while Routine.exists?(id:)
   end
 end

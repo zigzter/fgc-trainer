@@ -1,4 +1,9 @@
 class RoutineSession < ApplicationRecord
   belongs_to :routine
-  belongs_to :user
+  before_create :assign_id
+
+  def assign_id
+    self.id = generate_id
+    self.id = generate_id while Combo.exists?(id:)
+  end
 end

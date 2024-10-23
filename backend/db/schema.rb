@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_21_214041) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_23_210214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "combo_attempts", force: :cascade do |t|
+    t.bigint "routine_session_id", null: false
+    t.string "combo_id", null: false
+    t.integer "reps_done"
+    t.integer "reps_correct"
+    t.text "feedback"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["combo_id"], name: "index_combo_attempts_on_combo_id"
+    t.index ["routine_session_id"], name: "index_combo_attempts_on_routine_session_id"
+  end
 
   create_table "combos", id: :string, force: :cascade do |t|
     t.string "name"
@@ -47,6 +59,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_21_214041) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "combo_attempts", "combos"
+  add_foreign_key "combo_attempts", "routine_sessions"
   add_foreign_key "combos", "routines"
   add_foreign_key "routine_sessions", "routines"
 end

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  routine_session: one
+  combo: one
+  reps_done: 1
+  reps_correct: 1
+  feedback: MyText
+
+two:
+  routine_session: two
+  combo: two
+  reps_done: 1
+  reps_correct: 1
+  feedback: MyText

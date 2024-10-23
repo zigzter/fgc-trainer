@@ -8,8 +8,8 @@ class Combo < ApplicationRecord
   private
 
   def assign_id
-    self.id = SecureRandom.alphanumeric(8)
-    self.id = SecureRandom.alphanumeric(8) while Combo.exists?(id:)
+    self.id = generate_id
+    self.id = generate_id while Combo.exists?(id:)
   end
 
   def validate_inputs
