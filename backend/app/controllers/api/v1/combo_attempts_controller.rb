@@ -1,0 +1,2 @@
+class ComboAttemptsController < ApplicationController
+end

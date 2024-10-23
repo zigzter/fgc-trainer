@@ -6,7 +6,7 @@ class CreateRoutineSessions < ActiveRecord::Migration[7.1]
       t.string :user_id, null: false
       t.datetime :started_at
       t.datetime :completed_at
-      t.boolean :completed
+      t.boolean :completed, default: false
 
       t.timestamps
     end
