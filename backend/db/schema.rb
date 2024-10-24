@@ -14,8 +14,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_23_210214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "combo_attempts", force: :cascade do |t|
-    t.bigint "routine_session_id", null: false
+  create_table "combo_attempts", id: :string, force: :cascade do |t|
+    t.string "routine_session_id", null: false
     t.string "combo_id", null: false
     t.integer "reps_done"
     t.integer "reps_correct"
@@ -39,12 +39,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_23_210214) do
     t.index ["routine_id"], name: "index_combos_on_routine_id"
   end
 
-  create_table "routine_sessions", force: :cascade do |t|
+  create_table "routine_sessions", id: :string, force: :cascade do |t|
     t.string "routine_id", null: false
     t.string "user_id", null: false
     t.datetime "started_at"
     t.datetime "completed_at"
-    t.boolean "completed"
+    t.boolean "completed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["routine_id"], name: "index_routine_sessions_on_routine_id"
