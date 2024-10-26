@@ -20,6 +20,7 @@ import Routines from "./routes/Routines.tsx";
 import RoutineError from "./errors/RoutineError.tsx";
 import History from "./routes/History.tsx";
 import RoutineSession from "./routes/RoutineSession.tsx";
+import SessionDetails from "./routes/SessionDetails.tsx";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: "history",
                 element: <History />,
+            },
+            {
+                path: "history/:sessionId",
+                element: <SessionDetails />,
             },
         ],
     },

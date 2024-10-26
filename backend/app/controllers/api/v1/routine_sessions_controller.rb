@@ -2,8 +2,10 @@ module Api
   module V1
     class RoutineSessionsController < ApplicationController
       before_action :set_routine_session, only: %w[show update destroy]
+
       def index
         @routine_sessions = RoutineSession.where(user_id: @current_user[:id])
+        render json: @routine_sessions
       end
 
       def create

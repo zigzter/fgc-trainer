@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { Card, CardActionArea, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { getRoutineSessions } from "../api/routine_sessions";
-import { CircularProgress } from "@mui/material";
 
 export default function History() {
+    const navigate = useNavigate();
     const {
         data: history,
         error,
@@ -29,7 +31,12 @@ export default function History() {
         <>
             <h1>History</h1>
             {history.map((session) => (
-                <p>{session.id}</p>
+                <Card key={session.id} variant="outlined" sx={{ display: "flex", my: 2 }}>
+                    <CardActionArea onClick={() => navigate(`/history/${session.id}`)}>
+                        <h2>{session.started_at}</h2>
+                        <p>{session.id}</p>
+                    </CardActionArea>
+                </Card>
             ))}
         </>
     );

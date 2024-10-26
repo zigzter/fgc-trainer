@@ -5,11 +5,11 @@ export interface RoutineSessionResponse {
     id: string;
     routine_id: string;
     user_id: string;
-    started_at: Date;
-    completed_at: Date;
+    started_at: string;
+    completed_at: string;
     completed: boolean;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
 }
 
 export const getRoutineSessions = async (): Promise<RoutineSessionResponse[]> => {
