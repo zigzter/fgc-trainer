@@ -8,4 +8,9 @@ describe("formatDate tests", () => {
         const result = formatDate(railsDate);
         expect(result).toBe("10/26/2024, 12:07:25 PM");
     });
+
+    it("handles invalid input", () => {
+        const result = formatDate("asdf");
+        expect(result).toBe("");
+    });
 });
