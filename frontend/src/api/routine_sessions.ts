@@ -1,5 +1,6 @@
 import { ROUTINE_SESSIONS_URL } from "../config";
 import { getJWT } from "../utils/user";
+import { RoutineResponse } from "./routines";
 
 export interface RoutineSessionResponse {
     id: string;
@@ -10,11 +11,27 @@ export interface RoutineSessionResponse {
     completed: boolean;
     created_at: string;
     updated_at: string;
+    routine: RoutineResponse;
 }
 
 export const getRoutineSessions = async (): Promise<RoutineSessionResponse[]> => {
     const jwt = await getJWT();
     const res = await fetch(ROUTINE_SESSIONS_URL, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+    });
+
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+    return res.json();
+};
+
+export const getRoutineSession = async (id: string): Promise<RoutineSessionResponse> => {
+    const jwt = await getJWT();
+    const res = await fetch(`${ROUTINE_SESSIONS_URL}/${id}`, {
         headers: {
             Accept: "application/json",
             Authorization: `Bearer ${jwt?.string || ""}`,
