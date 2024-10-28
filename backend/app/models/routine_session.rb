@@ -2,6 +2,8 @@ class RoutineSession < ApplicationRecord
   belongs_to :routine
   before_create :assign_id, :set_started_at
 
+  private
+
   def set_started_at
     self.started_at = Time.now
   end

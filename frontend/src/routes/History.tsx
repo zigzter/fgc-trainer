@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardActionArea, CircularProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { getRoutineSessions } from "../api/routine_sessions";
+import { formatDate } from "../utils/formatDate";
 
 export default function History() {
     const navigate = useNavigate();
@@ -37,7 +38,7 @@ export default function History() {
                         sx={{ p: 2 }}
                     >
                         <Typography variant="h5">{session.routine.title}</Typography>
-                        <p>{session.started_at}</p>
+                        <p>{formatDate(session.started_at)}</p>
                     </CardActionArea>
                 </Card>
             ))}

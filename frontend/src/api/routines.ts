@@ -8,7 +8,6 @@ export interface RoutineResponse {
     game: GameName;
     title: string;
     notes: string;
-    combos: string;
     created_at: string;
     updated_at: string;
 }

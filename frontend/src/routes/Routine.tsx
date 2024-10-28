@@ -22,6 +22,7 @@ export default function Routine() {
     }, [location.state]);
 
     const routineId = params.routineId; // var assignment to deal with TS narrowing weirdness
+    // TODO: Is throwing the best option here?
     if (!routineId) {
         throw new Error("Missing routine ID");
     }
@@ -30,7 +31,7 @@ export default function Routine() {
     const mutation = useMutation({
         mutationFn: () => createRoutineSession(routineId),
         onSuccess: () => {
-            navigate("/session");
+            navigate("/session", { state: { routineId } });
         },
     });
 
