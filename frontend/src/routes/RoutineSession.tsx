@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import { CircularProgress, Typography } from "@mui/material";
+import { Card, CircularProgress, TextField, Typography } from "@mui/material";
 import { getRoutine } from "../api/routines";
 import { getCombos } from "../api/combos";
 
@@ -41,7 +41,16 @@ export default function RoutineSession() {
         <div>
             <Typography variant="h4">{routine.data.title}</Typography>
             {combos.data.map((combo) => (
-                <p>{combo.name}</p>
+                <Card>
+                    <p>
+                        {combo.name}: {combo.reps}
+                    </p>
+                    <form>
+                        <TextField label="Attempts" inputMode="numeric" />
+                        <TextField label="Attempts correct" inputMode="numeric" />
+                    </form>
+                    {combo.notes && <p>Notes: {combo.notes}</p>}
+                </Card>
             ))}
         </div>
     );
