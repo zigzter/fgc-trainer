@@ -30,8 +30,8 @@ export default function Routine() {
     const { data: routine, isPending, isSuccess } = useQuery(routineQuery(routineId));
     const mutation = useMutation({
         mutationFn: () => createRoutineSession(routineId),
-        onSuccess: () => {
-            navigate("/session", { state: { routineId } });
+        onSuccess: (data) => {
+            navigate("/session", { state: { session: data } });
         },
     });
 

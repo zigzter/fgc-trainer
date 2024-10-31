@@ -63,3 +63,21 @@ export const createRoutineSession = async (routineId: string): Promise<RoutineSe
     }
     return res.json();
 };
+
+export const updateRoutineSession = async (session: RoutineSessionResponse) => {
+    const jwt = await getJWT();
+    const res = await fetch(`${ROUTINE_SESSIONS_URL}/${session.id}`, {
+        method: "PUT",
+        headers: {
+            Authorization: `Bearer ${jwt?.string}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            routine_session: session,
+        }),
+    });
+
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+};

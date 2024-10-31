@@ -1,25 +1,35 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import { Card, CircularProgress, TextField, Typography } from "@mui/material";
+import { Button, Card, CircularProgress, TextField, Typography } from "@mui/material";
 import { getRoutine } from "../api/routines";
 import { getCombos } from "../api/combos";
+import { RoutineSessionResponse, updateRoutineSession } from "../api/routine_sessions";
 
 export default function RoutineSession() {
     const location = useLocation();
+    const session = location.state.session as RoutineSessionResponse;
     const routine = useQuery({
         queryKey: ["routine"],
-        queryFn: () => getRoutine(routineId),
+        queryFn: () => getRoutine(session.routine_id),
     });
 
     const combos = useQuery({
         queryKey: ["combos"],
-        queryFn: () => getCombos(routineId),
+        queryFn: () => getCombos(session.routine_id),
     });
 
-    const routineId = location.state.routineId;
-    if (!routineId) {
-        return <p>Missing routine ID.</p>;
-    }
+    const mutation = useMutation({
+        mutationFn: () =>
+            updateRoutineSession({
+                ...session,
+                completed: true,
+                completed_at: new Date().toISOString().toString(),
+            }),
+    });
+
+    const handleComplete = () => {
+        mutation.mutate();
+    };
 
     if (combos.isPending || routine.isPending) {
         return (
@@ -52,6 +62,7 @@ export default function RoutineSession() {
                     {combo.notes && <p>Notes: {combo.notes}</p>}
                 </Card>
             ))}
+            <Button onClick={handleComplete}>Complete</Button>
         </div>
     );
 }
