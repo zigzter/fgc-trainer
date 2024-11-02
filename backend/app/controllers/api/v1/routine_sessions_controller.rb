@@ -18,6 +18,16 @@ module Api
         end
       end
 
+      def active
+        @active_session = RoutineSession.find_by(user_id: @current_user[:id], completed: false)
+
+        if @active_session
+          render json: @active_session
+        else
+          render json: { error: 'No active session found' }, status: :not_found
+        end
+      end
+
       def update; end
 
       def destroy

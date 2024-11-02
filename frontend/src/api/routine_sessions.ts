@@ -44,6 +44,20 @@ export const getRoutineSession = async (id: string): Promise<RoutineSessionRespo
     return res.json();
 };
 
+export const getActiveRoutineSession = async (): Promise<RoutineSessionResponse> => {
+    const jwt = await getJWT();
+    const res = await fetch(`${ROUTINE_SESSIONS_URL}/active`, {
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${jwt?.string || ""}`,
+        },
+    });
+    if (!res.ok) {
+        throw new Error(res.statusText);
+    }
+    return res.json();
+};
+
 export const createRoutineSession = async (routineId: string): Promise<RoutineSessionResponse> => {
     const jwt = await getJWT();
     const res = await fetch(ROUTINE_SESSIONS_URL, {

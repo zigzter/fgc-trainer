@@ -1,18 +1,23 @@
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { Button, Card, CircularProgress, TextField, Typography } from "@mui/material";
 import { getRoutine } from "../api/routines";
 import { getCombos } from "../api/combos";
-import { RoutineSessionResponse, updateRoutineSession } from "../api/routine_sessions";
+import { getActiveRoutineSession, updateRoutineSession } from "../api/routine_sessions";
 
 export default function RoutineSession() {
     const location = useLocation();
-    const session = location.state.session as RoutineSessionResponse;
+    const [session, setSession] = useState(location.state?.session || null);
+
+    const active = useQuery({
+        queryKey: ["routine_session"],
+        queryFn: getActiveRoutineSession,
+    });
     const routine = useQuery({
         queryKey: ["routine"],
         queryFn: () => getRoutine(session.routine_id),
     });
-
     const combos = useQuery({
         queryKey: ["combos"],
         queryFn: () => getCombos(session.routine_id),
@@ -30,6 +35,18 @@ export default function RoutineSession() {
     const handleComplete = () => {
         mutation.mutate();
     };
+
+    useEffect(() => {
+        if (!session) {
+            active.refetch();
+        }
+    }, [session, active]);
+
+    useEffect(() => {
+        if (active.isSuccess) {
+            setSession(active.data);
+        }
+    }, [active.isFetching, active.isSuccess, active.data]);
 
     if (combos.isPending || routine.isPending) {
         return (

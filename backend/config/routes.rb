@@ -5,7 +5,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :routines
       resources :combos
-      resources :routine_sessions
+      resources :routine_sessions do
+        collection do
+          get :active
+        end
+      end
       resources :combo_attempts
     end
   end
