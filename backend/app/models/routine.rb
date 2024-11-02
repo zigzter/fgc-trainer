@@ -1,6 +1,6 @@
 class Routine < ApplicationRecord
   has_many :combos, dependent: :destroy
-  has_many :routine_sessions
+  has_many :routine_sessions, dependent: :nullify
   before_create :assign_id
 
   validates :game, presence: true, length: { minimum: 3 }

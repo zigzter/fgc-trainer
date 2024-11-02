@@ -1,5 +1,6 @@
 class Combo < ApplicationRecord
   belongs_to :routine
+  has_many :combo_attempts, dependent: :nullify
   positioned on: :routine
   before_create :assign_id
 

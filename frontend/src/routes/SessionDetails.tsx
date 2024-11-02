@@ -27,5 +27,5 @@ export default function SessionDetails() {
         return <p>{error.message}</p>;
     }
 
-    return <h1>{details.routine_id}</h1>;
+    return <h1>{details.routine.title}</h1>;
 }

@@ -1,5 +1,6 @@
 class RoutineSession < ApplicationRecord
   belongs_to :routine
+  has_many :combo_attempts, dependent: :destroy
   before_create :assign_id, :set_started_at
   validate :limit_active_sessions
 
@@ -17,6 +18,6 @@ class RoutineSession < ApplicationRecord
 
   def assign_id
     self.id = generate_id
-    self.id = generate_id while Combo.exists?(id:)
+    self.id = generate_id while RoutineSession.exists?(id:)
   end
 end

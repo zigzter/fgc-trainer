@@ -1,6 +1,7 @@
 import { ROUTINES_URL } from "../config";
 import { GameName } from "../types/content";
 import { getJWT } from "../utils/user";
+import { ExistingCombo } from "./combos";
 
 export interface RoutineResponse {
     id: string;
@@ -8,6 +9,7 @@ export interface RoutineResponse {
     game: GameName;
     title: string;
     notes: string;
+    combos: ExistingCombo[];
     created_at: string;
     updated_at: string;
 }

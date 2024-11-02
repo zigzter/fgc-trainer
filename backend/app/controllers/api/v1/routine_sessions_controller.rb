@@ -19,16 +19,23 @@ module Api
       end
 
       def active
-        @active_session = RoutineSession.find_by(user_id: @current_user[:id], completed: false)
+        @active_session = RoutineSession.includes(routine: :combos).find_by(user_id: @current_user[:id],
+                                                                            completed: false)
 
         if @active_session
-          render json: @active_session
+          render json: @active_session, include: { routine: { include: :combos } }
         else
           render json: { error: 'No active session found' }, status: :not_found
         end
       end
 
-      def update; end
+      def update
+        if @routine_session.update(routine_session_params)
+          render json: @routine_session
+        else
+          render json: @routine.errors, status: :unprocessable_entity
+        end
+      end
 
       def destroy
         @routine_session.destroy
