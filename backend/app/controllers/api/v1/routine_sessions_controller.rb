@@ -10,6 +10,7 @@ module Api
 
       def create
         @routine_session = RoutineSession.new(routine_session_params.merge(user_id: @current_user[:id]))
+        @routine_session.user_id = @current_user[:id]
         if @routine_session.save
           render json: @routine_session, status: :created
         else
