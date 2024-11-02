@@ -78,7 +78,7 @@ export const createRoutineSession = async (routineId: string): Promise<RoutineSe
     return res.json();
 };
 
-export const updateRoutineSession = async (session: RoutineSessionResponse) => {
+export const updateRoutineSession = async (session: Partial<RoutineSessionResponse>) => {
     const jwt = await getJWT();
     const res = await fetch(`${ROUTINE_SESSIONS_URL}/${session.id}`, {
         method: "PUT",
@@ -94,4 +94,5 @@ export const updateRoutineSession = async (session: RoutineSessionResponse) => {
     if (!res.ok) {
         throw new Error(res.statusText);
     }
+    return res.json();
 };

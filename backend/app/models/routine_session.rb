@@ -2,7 +2,7 @@ class RoutineSession < ApplicationRecord
   belongs_to :routine
   has_many :combo_attempts, dependent: :destroy
   before_create :assign_id, :set_started_at
-  validate :limit_active_sessions
+  validate :limit_active_sessions, on: :create
 
   private
 

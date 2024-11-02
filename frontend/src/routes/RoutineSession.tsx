@@ -22,17 +22,18 @@ export default function RoutineSession() {
     const mutation = useMutation({
         mutationFn: () =>
             updateRoutineSession({
-                ...session,
+                id: session.id,
                 completed: true,
                 completed_at: new Date().toISOString().toString(),
             }),
+        onSuccess: () => {
+            navigate(`/history/${session.id}`);
+        },
     });
 
     const handleComplete = () => {
         mutation.mutate();
         queryClient.invalidateQueries({ queryKey: ["routine_session"] });
-        // TODO: gracefully handle undefined data, if a possibility
-        navigate(`/history/${session.id}`);
     };
 
     useEffect(() => {

@@ -42,7 +42,7 @@ module Api
       end
 
       def show
-        render json: @routine_session
+        render json: @routine_session, include: :routine
       end
 
       private
@@ -55,13 +55,11 @@ module Api
         elsif @routine_session.user_id != @current_user[:id]
           render json: { error: 'Not authorized' }, status: :unauthorized
           nil
-        else
-          render json: @routine_session, include: :routine
         end
       end
 
       def routine_session_params
-        params.require(:routine_session).permit(:routine_id)
+        params.require(:routine_session).permit(:id, :routine_id, :completed_at, :completed)
       end
     end
   end
