@@ -4,7 +4,7 @@ module Api
       before_action :set_routine_session, only: %i[show update destroy]
 
       def index
-        @routine_sessions = RoutineSession.includes(:routine).where(user_id: @current_user[:id])
+        @routine_sessions = RoutineSession.includes(:routine).where(user_id: @current_user[:id]).order('completed_at DESC')
         render json: @routine_sessions, include: :routine
       end
 

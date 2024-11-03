@@ -7,7 +7,7 @@ module Api
       rescue_from ActiveRecord::RecordNotDestroyed, with: :not_destroyed
 
       def index
-        @routines = Routine.where(user_id: @current_user[:id])
+        @routines = Routine.where(user_id: @current_user[:id]).order('created_at DESC')
         render json: @routines
       end
 
