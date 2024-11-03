@@ -1,33 +1,37 @@
-import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Card, CircularProgress, TextField, Typography } from "@mui/material";
-import {
-    RoutineSessionResponse,
-    getActiveRoutineSession,
-    updateRoutineSession,
-} from "../api/routine_sessions";
+import { getActiveRoutineSession, updateRoutineSession } from "../api/routine_sessions";
 
 export default function RoutineSession() {
-    const location = useLocation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-    const [session, setSession] = useState<RoutineSessionResponse>(location.state?.session || null);
 
-    const active = useQuery({
+    const {
+        data: session,
+        isPending,
+        isError,
+        error,
+    } = useQuery({
         queryKey: ["routine_session"],
         queryFn: getActiveRoutineSession,
+        retry: (count, error) => {
+            if (error.message === "Not Found") {
+                return false;
+            }
+            return count < 3;
+        },
     });
 
     const mutation = useMutation({
         mutationFn: () =>
             updateRoutineSession({
-                id: session.id,
+                id: session!.id,
                 completed: true,
                 completed_at: new Date().toISOString().toString(),
             }),
         onSuccess: () => {
-            navigate(`/history/${session.id}`);
+            navigate(`/history/${session!.id}`);
         },
     });
 
@@ -36,24 +40,16 @@ export default function RoutineSession() {
         queryClient.invalidateQueries({ queryKey: ["routine_session"] });
     };
 
-    useEffect(() => {
-        if (!session) {
-            active.refetch();
-        }
-    }, [session, active]);
-
-    useEffect(() => {
-        if (active.isSuccess) {
-            setSession(active.data);
-        }
-    }, [active.isFetching, active.isSuccess, active.data]);
-
-    if (active.isPending || !session) {
+    if (isPending) {
         return (
             <div>
                 <CircularProgress />
             </div>
         );
+    }
+
+    if (isError) {
+        return <p>{error.message}</p>;
     }
 
     return (
