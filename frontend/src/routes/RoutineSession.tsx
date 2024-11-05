@@ -1,7 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, CircularProgress, TextField, Typography } from "@mui/material";
+import { Button, Card, CircularProgress, Typography } from "@mui/material";
 import { getActiveRoutineSession, updateRoutineSession } from "../api/routine_sessions";
+import ComboAttemptForm from "../components/ComboAttemptForm";
+import { updateComboAttempts } from "../api/combo_attempts";
 
 export default function RoutineSession() {
     const queryClient = useQueryClient();
@@ -23,7 +25,7 @@ export default function RoutineSession() {
         },
     });
 
-    const mutation = useMutation({
+    const completeSessionMutation = useMutation({
         mutationFn: () =>
             updateRoutineSession({
                 id: session!.id,
@@ -35,8 +37,12 @@ export default function RoutineSession() {
         },
     });
 
+    const updateComboAttemptMutation = useMutation({
+        mutationFn: updateComboAttempts,
+    });
+
     const handleComplete = () => {
-        mutation.mutate();
+        completeSessionMutation.mutate();
         queryClient.invalidateQueries({ queryKey: ["routine_session"] });
     };
 
@@ -60,10 +66,10 @@ export default function RoutineSession() {
                     <p>
                         {combo.name}: {combo.reps}
                     </p>
-                    <form>
-                        <TextField label="Attempts" inputMode="numeric" />
-                        <TextField label="Attempts correct" inputMode="numeric" />
-                    </form>
+                    <ComboAttemptForm
+                        reps={combo.reps}
+                        updateRepsCorrect={updateComboAttemptMutation.mutate}
+                    />
                     {combo.notes && <p>Notes: {combo.notes}</p>}
                 </Card>
             ))}
