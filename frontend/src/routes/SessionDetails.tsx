@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getRoutineSession } from "../api/routine_sessions";
+import { getRoutineSession, routineSessionKeys } from "../api/routine_sessions";
 import { CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 
@@ -11,7 +11,7 @@ export default function SessionDetails() {
         isError,
         isPending,
     } = useQuery({
-        queryKey: ["session_details"],
+        queryKey: routineSessionKeys.details(params.sessionId!),
         queryFn: () => getRoutineSession(params.sessionId!),
     });
 

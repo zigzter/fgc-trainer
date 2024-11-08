@@ -6,6 +6,7 @@ import { smashUltimate } from "../data/smash_ultimate";
 import {
     ComboFormData,
     ExistingCombo,
+    comboKeys,
     createCombo,
     isComboUpdate,
     updateCombo,
@@ -56,7 +57,7 @@ export default function ComboForm(props: Props) {
         },
         onSuccess: () => {
             onSuccess();
-            queryClient.invalidateQueries({ queryKey: ["combos"] });
+            queryClient.invalidateQueries({ queryKey: comboKeys.all });
         },
     });
 

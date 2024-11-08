@@ -1,6 +1,11 @@
 import { COMBOS_URL } from "../config";
 import { getJWT } from "../utils/user";
 
+export const comboKeys = {
+    all: ["combos"] as const,
+    details: (id: string) => [...comboKeys.all, id] as const,
+};
+
 export interface ExistingCombo {
     id: string;
     inputs: string[];

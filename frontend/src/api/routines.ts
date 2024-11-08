@@ -3,6 +3,11 @@ import { GameName } from "../types/content";
 import { getJWT } from "../utils/user";
 import { ExistingCombo } from "./combos";
 
+export const routineKeys = {
+    all: ["routines"] as const,
+    details: (id: string) => [...routineKeys.all, id] as const,
+};
+
 export interface RoutineResponse {
     id: string;
     user_id: string;

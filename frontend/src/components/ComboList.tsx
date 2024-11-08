@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
 import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
-import { ExistingCombo, getCombos, updateCombo } from "../api/combos";
+import { ExistingCombo, comboKeys, getCombos, updateCombo } from "../api/combos";
 import ComboForm from "./ComboForm";
 import { GameName } from "../types/content";
 import Combo from "./Combo";
@@ -22,29 +22,29 @@ export default function ComboList({ routineId, game }: Props) {
         isError,
         error,
     } = useQuery({
-        queryKey: ["combos"],
+        queryKey: comboKeys.all,
         queryFn: () => getCombos(routineId),
     });
 
     const mutation = useMutation({
         mutationFn: updateCombo,
         onMutate: (dragged) => {
-            queryClient.cancelQueries({ queryKey: ["combos"] });
-            const previousCombos = queryClient.getQueryData<ExistingCombo[]>(["combos"]);
+            queryClient.cancelQueries({ queryKey: comboKeys.all });
+            const previousCombos = queryClient.getQueryData<ExistingCombo[]>(comboKeys.all);
 
             if (previousCombos) {
                 const oldIndex = previousCombos.findIndex((combo) => combo.id === dragged.id);
                 const newIndex = previousCombos.findIndex((combo) => combo.id === dragged.target);
                 const newOrder = arrayMove(previousCombos, oldIndex, newIndex);
-                queryClient.setQueryData(["combos"], newOrder);
+                queryClient.setQueryData(comboKeys.all, newOrder);
             }
             return previousCombos;
         },
         onError: (_, __, context) => {
-            queryClient.setQueryData(["combos", routineId], context);
+            queryClient.setQueryData([comboKeys.all, routineId], context);
         },
         onSettled: () => {
-            return queryClient.invalidateQueries({ queryKey: ["combos"] });
+            return queryClient.invalidateQueries({ queryKey: comboKeys.all });
         },
     });
 

@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, CircularProgress, Typography } from "@mui/material";
-import { getActiveRoutineSession, updateRoutineSession } from "../api/routine_sessions";
+import {
+    getActiveRoutineSession,
+    routineSessionKeys,
+    updateRoutineSession,
+} from "../api/routine_sessions";
 import ComboAttemptForm from "../components/ComboAttemptForm";
 import { updateComboAttempts } from "../api/combo_attempts";
 
@@ -15,7 +19,7 @@ export default function RoutineSession() {
         isError,
         error,
     } = useQuery({
-        queryKey: ["routine_session"],
+        queryKey: routineSessionKeys.all,
         queryFn: getActiveRoutineSession,
         retry: (count, error) => {
             if (error.message === "Not Found") {
@@ -43,7 +47,7 @@ export default function RoutineSession() {
 
     const handleComplete = () => {
         completeSessionMutation.mutate();
-        queryClient.invalidateQueries({ queryKey: ["routine_session"] });
+        queryClient.invalidateQueries({ queryKey: routineSessionKeys.all });
     };
 
     if (isPending) {

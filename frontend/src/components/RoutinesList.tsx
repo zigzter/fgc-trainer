@@ -1,7 +1,7 @@
 import { Card, CardActionArea, CardActions, CircularProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteRoutine, getRoutines } from "../api/routines";
+import { deleteRoutine, getRoutines, routineKeys } from "../api/routines";
 import PopupMenu from "./PopupMenu";
 
 export default function RoutinesList() {
@@ -14,14 +14,14 @@ export default function RoutinesList() {
         isError,
         isPending,
     } = useQuery({
-        queryKey: ["routines"],
+        queryKey: routineKeys.all,
         queryFn: getRoutines,
     });
 
     const mutation = useMutation({
         mutationFn: (id: string) => deleteRoutine(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["routines"] });
+            queryClient.invalidateQueries({ queryKey: routineKeys.all });
         },
     });
 

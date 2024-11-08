@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardActionArea, CircularProgress, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { getRoutineSessions } from "../api/routine_sessions";
+import { getRoutineSessions, routineSessionKeys } from "../api/routine_sessions";
 import { formatDate } from "../utils/formatDate";
 
 export default function History() {
@@ -12,7 +12,7 @@ export default function History() {
         isError,
         isPending,
     } = useQuery({
-        queryKey: ["history"],
+        queryKey: routineSessionKeys.all,
         queryFn: getRoutineSessions,
     });
 

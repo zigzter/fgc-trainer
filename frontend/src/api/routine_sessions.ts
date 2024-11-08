@@ -2,6 +2,11 @@ import { ROUTINE_SESSIONS_URL } from "../config";
 import { getJWT } from "../utils/user";
 import { RoutineResponse } from "./routines";
 
+export const routineSessionKeys = {
+    all: ["routineSession"] as const,
+    details: (id: string) => [...routineSessionKeys.all, id] as const,
+};
+
 export interface RoutineSessionResponse {
     id: string;
     routine_id: string;

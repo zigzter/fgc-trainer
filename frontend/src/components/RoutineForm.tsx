@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import Form from "./Form";
 import games from "../data/games";
-import { RoutineFormData, upsertRoutine } from "../api/routines";
+import { RoutineFormData, routineKeys, upsertRoutine } from "../api/routines";
 
 interface PostProps {
     method: "POST";
@@ -30,10 +30,10 @@ export default function RoutineForm(props: Props) {
 
     const mutation = useMutation({
         mutationFn: upsertRoutine(method, method === "PUT" ? props.routineId : undefined),
-        mutationKey: ["routines"],
+        mutationKey: routineKeys.all,
         onSuccess: () => {
             onSuccess();
-            queryClient.invalidateQueries({ queryKey: ["routines"] });
+            queryClient.invalidateQueries({ queryKey: routineKeys.all });
         },
     });
 

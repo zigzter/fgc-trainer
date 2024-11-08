@@ -2,7 +2,7 @@ import { Card, CardActions, CardContent, Chip, IconButton, Stack, Typography } f
 import { DragHandle } from "@mui/icons-material";
 import { useSortable } from "@dnd-kit/sortable";
 import PopupMenu from "./PopupMenu";
-import { ExistingCombo, deleteCombo } from "../api/combos";
+import { ExistingCombo, comboKeys, deleteCombo } from "../api/combos";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -19,7 +19,7 @@ export default function Combo({ combo, onEdit }: Props) {
     const mutation = useMutation({
         mutationFn: () => deleteCombo(combo.id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["combos"] });
+            queryClient.invalidateQueries({ queryKey: comboKeys.all });
         },
     });
 
