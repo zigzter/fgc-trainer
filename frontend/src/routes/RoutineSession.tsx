@@ -43,6 +43,9 @@ export default function RoutineSession() {
 
     const updateComboAttemptMutation = useMutation({
         mutationFn: updateComboAttempts,
+        onError: (err) => {
+            console.error(err);
+        },
     });
 
     const handleComplete = () => {
@@ -72,7 +75,9 @@ export default function RoutineSession() {
                     </p>
                     <ComboAttemptForm
                         reps={combo.reps}
-                        updateRepsCorrect={updateComboAttemptMutation.mutate}
+                        updateRepsCorrect={(data) =>
+                            updateComboAttemptMutation.mutate({ ...data, id: combo.id })
+                        }
                     />
                     {combo.notes && <p>Notes: {combo.notes}</p>}
                 </Card>
