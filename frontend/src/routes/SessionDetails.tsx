@@ -4,15 +4,15 @@ import { CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 
 export default function SessionDetails() {
-    const params = useParams();
+    const { sessionId } = useParams();
     const {
         data: details,
         error,
         isError,
         isPending,
     } = useQuery({
-        queryKey: routineSessionKeys.details(params.sessionId!),
-        queryFn: () => getRoutineSession(params.sessionId!),
+        queryKey: routineSessionKeys.details(sessionId!),
+        queryFn: () => getRoutineSession(sessionId!),
     });
 
     if (isPending) {

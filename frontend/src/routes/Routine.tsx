@@ -11,7 +11,7 @@ import { createRoutineSession } from "../api/routine_sessions";
 export default function Routine() {
     const [isEditing, setIsEditing] = useState(false);
     const [isAddingCombo, setIsAddingCombo] = useState(false);
-    const params = useParams();
+    const { routineId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -21,15 +21,9 @@ export default function Routine() {
         }
     }, [location.state]);
 
-    const routineId = params.routineId; // var assignment to deal with TS narrowing weirdness
-    // TODO: Is throwing the best option here?
-    if (!routineId) {
-        throw new Error("Missing routine ID");
-    }
-
-    const { data: routine, isPending, isSuccess } = useQuery(routineQuery(routineId));
+    const { data: routine, isPending, isSuccess } = useQuery(routineQuery(routineId!));
     const mutation = useMutation({
-        mutationFn: () => createRoutineSession(routineId),
+        mutationFn: () => createRoutineSession(routineId!),
         onSuccess: () => {
             navigate("/session");
         },
