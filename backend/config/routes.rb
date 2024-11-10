@@ -10,7 +10,11 @@ Rails.application.routes.draw do
           get :active
         end
       end
-      resources :combo_attempts
+      resources :combo_attempts do
+        collection do
+          post :bulk_create
+        end
+      end
     end
   end
   get 'up' => 'rails/health#show', as: :rails_health_check

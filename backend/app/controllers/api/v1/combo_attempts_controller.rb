@@ -17,6 +17,19 @@ module Api
         end
       end
 
+      def bulk_create
+        combo_ids = params[:combo_ids]
+        combo_attempts = combo_ids.map do |combo_id|
+          { combo_id:, routine_session_id: @routine_session.id }
+        end
+
+        if ComboAttempt.insert_all(combo_attempts)
+          render status: :created
+        else
+          render status: :unprocessable_entity
+        end
+      end
+
       def update
         if @combo_attempt.update(combo_attempt_params)
           render json: @combo_attempt
