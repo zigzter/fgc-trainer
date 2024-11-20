@@ -22,15 +22,19 @@ export default function Routine() {
     }, [location.state]);
 
     const { data: routine, isPending, isSuccess } = useQuery(routineQuery(routineId!));
-    const mutation = useMutation({
+    const startSessionMutation = useMutation({
         mutationFn: () => createRoutineSession(routineId!),
-        onSuccess: () => {
-            navigate("/session");
+        onSettled: (_, error) => {
+            if (error) {
+                console.error(error);
+            } else {
+                navigate("/session");
+            }
         },
     });
 
     const handleRoutineStart = () => {
-        mutation.mutate();
+        startSessionMutation.mutate();
     };
 
     if (isPending) {

@@ -33,13 +33,13 @@ module Api
       end
 
       def show
-        render json: @routine
+        render json: @routine, include: :combos
       end
 
       private
 
       def set_routine
-        @routine = Routine.find_by(id: params[:id])
+        @routine = Routine.includes(:combos).find_by(id: params[:id])
         if @routine.nil?
           render json: { error: 'Routine not found' }, status: :not_found
           nil
