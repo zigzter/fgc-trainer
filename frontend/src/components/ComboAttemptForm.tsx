@@ -1,23 +1,27 @@
 import { TextField } from "@mui/material";
-import { UseMutateFunction } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
+interface Data {
+    reps_done: string;
+    reps_correct: string;
+}
+
 interface Props {
-    reps: number;
-    updateRepsCorrect: UseMutateFunction;
+    reps: string;
+    updateRepsCorrect: (data: Data) => void;
 }
 
 export default function ComboAttemptForm({ reps, updateRepsCorrect }: Props) {
     const { register, handleSubmit, watch } = useForm({
         defaultValues: {
             reps_done: reps,
-            reps_correct: 0,
+            reps_correct: "0",
         },
     });
 
     const onSubmit = useCallback(
-        (data) => {
+        (data: Data) => {
             updateRepsCorrect(data);
         },
         [updateRepsCorrect],

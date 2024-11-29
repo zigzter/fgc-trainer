@@ -74,10 +74,11 @@ export default function RoutineSession() {
                         {combo.name}: {combo.reps}
                     </p>
                     <ComboAttemptForm
-                        reps={combo.reps}
-                        updateRepsCorrect={(data) =>
-                            updateComboAttemptMutation.mutate({ ...data, id: combo.id })
-                        }
+                        // TODO: Properly set types
+                        reps={String(combo.reps)}
+                        updateRepsCorrect={(data) => {
+                            updateComboAttemptMutation.mutate({ ...data, id: combo.id });
+                        }}
                     />
                     {combo.notes && <p>Notes: {combo.notes}</p>}
                 </Card>
