@@ -68,7 +68,7 @@ export default function RoutineSession() {
     return (
         <div>
             <Typography variant="h4">{session.routine.title}</Typography>
-            {session.routine.combos.map((combo) => (
+            {session.combo_attempts.map((combo) => (
                 <Card key={combo.id}>
                     <p>
                         {combo.name}: {combo.reps}

@@ -3,8 +3,8 @@ import { getJWT } from "../utils/user";
 
 interface Args {
     id: string;
-    reps_done: string;
-    reps_correct: string;
+    reps_done: number;
+    reps_correct: number;
 }
 
 export const updateComboAttempts = async ({ id, reps_done, reps_correct }: Args) => {

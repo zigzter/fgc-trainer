@@ -22,12 +22,30 @@ module Api
         end
       end
 
+      # TODO: slim down this method
       def active
         @active_session = RoutineSession
-                          .includes(routine: :combos)
+                          .includes(:routine, combo_attempts: :combo)
                           .find_by(user_id: @current_user[:id], completed: false)
         if @active_session
-          render json: @active_session, include: { routine: { include: :combos } }
+          merged_data = @active_session.combo_attempts.map do |attempt|
+            {
+              id: attempt.id,
+              routine_session_id: attempt.routine_session_id,
+              combo_id: attempt.combo.id,
+              combo_name: attempt.combo.name,
+              inputs: attempt.combo.inputs,
+              notes: attempt.combo.notes,
+              feedback: attempt.feedback,
+              reps_done: attempt.reps_done,
+              reps_correct: attempt.reps_correct
+            }
+          end
+          render json: {
+            id: @active_session.id,
+            routine: @active_session.routine,
+            combo_attempts: merged_data
+          }
         else
           render json: { error: 'No active session found' }, status: :not_found
         end

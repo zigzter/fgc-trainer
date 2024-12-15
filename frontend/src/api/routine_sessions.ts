@@ -1,11 +1,23 @@
 import { ROUTINE_SESSIONS_URL } from "../config";
 import { getJWT } from "../utils/user";
+import { ExistingCombo } from "./combos";
 import { RoutineResponse } from "./routines";
 
 export const routineSessionKeys = {
     all: ["routineSession"] as const,
     details: (id: string) => [...routineSessionKeys.all, id] as const,
 };
+
+export interface ComboAttempt {
+    id: string;
+    routine_session_id: string;
+    combo_id: string;
+    reps_done: number;
+    reps_correct: number;
+    feedback: string;
+    created_at: string;
+    updated_at: string;
+}
 
 export interface RoutineSessionResponse {
     id: string;
@@ -16,7 +28,9 @@ export interface RoutineSessionResponse {
     completed: boolean;
     created_at: string;
     updated_at: string;
-    routine: RoutineResponse;
+    /** combo_attempts here is a merge of the attempt and its combo */
+    combo_attempts: (ComboAttempt & ExistingCombo)[];
+    routine: Omit<RoutineResponse, "combos">;
 }
 
 export const getRoutineSessions = async (): Promise<RoutineSessionResponse[]> => {

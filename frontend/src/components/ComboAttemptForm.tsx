@@ -3,12 +3,12 @@ import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface Data {
-    reps_done: string;
-    reps_correct: string;
+    reps_done: number;
+    reps_correct: number;
 }
 
 interface Props {
-    reps: string;
+    reps: number;
     updateRepsCorrect: (data: Data) => void;
 }
 
